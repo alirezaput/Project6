@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HW6v3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab_done">همه کارها</string>
+    <string name="tab_undone">کارهای انجام شده</string>
+    <string name="toast_delete_task">برنامه مورد نظر شما با موفقیت حذف شد!</string>
+    <string name="toast_insert_item">برنامه روزانه اضافه شد.</string>
+</resources>
