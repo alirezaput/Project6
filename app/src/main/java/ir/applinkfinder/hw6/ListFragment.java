@@ -144,15 +144,15 @@ public class ListFragment extends Fragment {
 
 //            letterImageView = itemView.findViewById(R.id.gmailitem_letter);
 
-            // Edit - Delete - Done
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-////                    Toast.makeText(getActivity(), mCrime.getTitle() + " clicked!", Toast.LENGTH_LONG).show();
-//                    Intent intent = EditDeleteDoneActivity.newIntent(getActivity(), mTitleTextView.getText().toString(), mDetailTextView.getText().toString());
-//                    startActivity(intent);
-//                }
-//            });
+//             Edit - Delete - Done
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Toast.makeText(getActivity(), mCrime.getTitle() + " clicked!", Toast.LENGTH_LONG).show();
+                    Intent intent = EditDeleteDoneActivity.newIntent(getActivity(), mTitleTextView.getText().toString(), mDetailTextView.getText().toString());
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bind(WorksModel worksModel) {
