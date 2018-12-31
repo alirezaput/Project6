@@ -16,8 +16,6 @@ import java.util.List;
 
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
-import ir.applinkfinder.hw6v3.model.WorksModel;
-import ir.applinkfinder.hw6v3.model.WorksRepository;
 
 
 /**
@@ -99,7 +97,19 @@ public class EditDeleteDoneFragment extends Fragment {
 
 
 
+        final FragmentManager fragmentManager = getFragmentManager();
+        final MyDialogFragment myDialogFragment = new MyDialogFragment();
 
+        mImageButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myDialogFragment.newInstance(title, detail).show(fragmentManager, "Custom Dialog Manager");
+//                myDialogFragment.show(fragmentManager, "Custom Dialog Fragment");
+
+//                deleteItem(title, detail);
+            }
+        });
 
         mImageButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
