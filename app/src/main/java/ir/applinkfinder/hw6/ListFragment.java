@@ -1,16 +1,23 @@
 package ir.applinkfinder.hw6;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -36,6 +43,30 @@ public class ListFragment extends Fragment {
     private int tabNum = 0;
     public ListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ------------- Toolbar -----------
+        ActionBar myActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        RelativeLayout myLayout = new RelativeLayout(getActivity());
+        TextView textview = new TextView(getActivity());
+        textview.setText(R.string.actionbar_editdeletedone_title);
+        textview.setTextColor(Color.WHITE);
+        RelativeLayout.LayoutParams textviewDetails =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        textview.setLayoutParams(textviewDetails);
+        textview.setGravity(Gravity.RIGHT);
+        textview.setTextSize(25);
+        textview.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/BNazanin_0.ttf"));
+
+        myActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        myActionBar.setCustomView(textview);
+
     }
 
     @Override
