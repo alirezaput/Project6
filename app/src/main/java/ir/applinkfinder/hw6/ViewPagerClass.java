@@ -17,6 +17,18 @@ public class ViewPagerClass extends FragmentPagerAdapter{ //FragmentStatePagerAd
     // This determines the fragment for each tab
     @Override
     public Fragment getItem(int position) {
+        if (position == 0) { //0
+//            return new DoneFragment();
+            return new ListFragment().newInstance(0); //0
+        }
+        else if (position == 1){ //1
+//            return new UndoneFragment();
+            return new ListFragment().newInstance(1); //1
+        }
+//        else if (position == 2){
+////            return new AllworksFragment();
+//            return new ListFragment().newInstance(2);
+//        }
         return null;
     }
 
