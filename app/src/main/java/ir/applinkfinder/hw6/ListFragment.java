@@ -1,5 +1,6 @@
 package ir.applinkfinder.hw6;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -47,15 +48,15 @@ public class ListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFloatingActionButtonAdd = view.findViewById(R.id.floatingActionButton_add);
 
-//        //Add
-//        mFloatingActionButtonAdd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                Toast.makeText(getActivity(), "AAA", Toast.LENGTH_SHORT).show();
-//                Intent intent = AddItemToListActivity.newIntent(getActivity());
-//                startActivity(intent);
-//            }
-//        });
+        //Add
+        mFloatingActionButtonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(getActivity(), "AAA", Toast.LENGTH_SHORT).show();
+                Intent intent = AddItemToListActivity.newIntent(getActivity());
+                startActivity(intent);
+            }
+        });
 
         updateUI();
         return view;
