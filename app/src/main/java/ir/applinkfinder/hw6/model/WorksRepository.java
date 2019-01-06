@@ -1,5 +1,7 @@
 package ir.applinkfinder.hw6.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,43 +11,20 @@ public class WorksRepository {
     public List<WorksModel> mWorksListDone;
 
     private static WorksRepository instance;
-    private static WorksRepository instanceDone;
+//    private static WorksRepository instanceDone;
     private static WorksRepository instanceUndone;
 
-
     private ArrayList<WorksModel> DoneWork;
-
-    ///////////////////////////////////////////////////////////
-//    public static CustomListListener mListener;
-//    public interface CustomListListener{
-//        void onListChanged(List<WorksModel> myList);
-//    }
-//    public static void setOnListChangeListener(CustomListListener listener){
-//        mListener = listener;
-//    }
-
-    //////////////////////////////////////////////////////////
-
-
     // ----------------------------------------------------------------------------------------------
     private WorksRepository(){ // 1 constructor e private misazim ke dg kasi natune new sh kone
         mWorksList = new ArrayList<>();
         mWorksListDone = new ArrayList<>();
-//        for (int i = 0; i < 10; i++){
-//            WorksModel worksModel = new WorksModel();
-//            worksModel.setTitle("Title: " + i);
-//            worksModel.setDetail("Details: " + i);
-////            worksModel.setDate(new Date());
-//            worksModel.setHour("Hour: " + i);
-////           contactsModel.setSolved(i % 2 == 0); // yeki dar mian true false midahad
-//            mWorksList.add(worksModel);
-//        }
     }//WorksRepository Constructor
 
     public List<WorksModel> getDoneWork(){
-        WorksRepository worksRepository = WorksRepository.getInstanceDone();
+        WorksRepository worksRepository = WorksRepository.getInstance();
         List<WorksModel> DoneWorkList = new ArrayList<>();
-        for (int i = 0; i < worksRepository.getmWorksList().size(); i++){
+        for (int i = 0; i < worksRepository.getmWorkListDone().size(); i++){
             if (worksRepository.getmWorksList().get(i).isDone()){
                 DoneWorkList.add(worksRepository.getmWorksList().get(i));
             }
@@ -64,28 +43,11 @@ public class WorksRepository {
         return UndoneWorkList;
     }
 
-    public List<WorksModel> getAllWork(){
-        WorksRepository worksRepository = WorksRepository.getInstance();
-        List<WorksModel> AllWorkList = new ArrayList<>();
-        for (int i = 0; i < worksRepository.getmWorksList().size(); i++){
-            AllWorkList.add(worksRepository.getmWorksList().get(i));
-        }
-        return AllWorkList;
-    }
-
-
     public static WorksRepository getInstance() {
         if (instance == null){ // baraye ine ke faqat 1 bar new she
             instance = new WorksRepository();
         }
         return instance;
-    }
-
-    public static WorksRepository getInstanceDone() {
-        if (instanceDone == null){ // baraye ine ke faqat 1 bar new she
-            instanceDone = new WorksRepository();
-        }
-        return instanceDone;
     }
 
     public static WorksRepository getInstanceUndone() {
@@ -104,14 +66,6 @@ public class WorksRepository {
         return mWorksListDone;
     }
 
-//    public WorksModel getWork(UUID id){
-//        for (WorksModel worksModel: mWorksList){
-//            if (worksModel.getId().equals(id))
-//                return worksModel;
-//            }
-//        return null;
-//    }//getWork
-
     public WorksModel getWork(UUID id){
         for (WorksModel worksModel: mWorksList){
             if (worksModel.getId().equals(id))
@@ -121,75 +75,55 @@ public class WorksRepository {
     }//getWork
 
     public WorksModel getWorkDone(UUID id){
-        for (WorksModel worksModel: mWorksListDone){
-            if (worksModel.getId().equals(id))
-                return worksModel;
+        for(int i=0;i<WorksRepository.getInstance().getmWorkListDone().size();i++) {
+            if(WorksRepository.getInstance().getmWorkListDone().get(i).getId().equals(id)) {
+                return WorksRepository.getInstance().getmWorkListDone().get(i);
+            }
         }
         return null;
-    }//getWork
+    }//getWorkDone
 
     public void addWork(WorksModel worksModel){
         WorksRepository.getInstance().getmWorksList().add(worksModel);
     }
 
     public void addWorkDone(WorksModel worksModel){
-        WorksRepository.getInstanceDone().getmWorkListDone().add(worksModel);
+        WorksRepository.getInstance().getmWorkListDone().add(worksModel);
     }
 
-    public void deleteWork(String title, String detail){
-        WorksRepository mWorksRepository = WorksRepository.getInstance();
-//        WorksRepository.getInstance().getmWorksList().remove(worksModel);
-        for(int i=0;i<mWorksRepository.getmWorksList().size();i++) {
-            if(mWorksRepository.getmWorksList().get(i).getTitle().contains(title) &&
-                    mWorksRepository.getmWorksList().get(i).getDetail().contains(detail))
-            {
-                mWorksRepository.getmWorksList().remove(i);
+    public void deleteWork(UUID id){
+        int delNum = -1;
+        WorksModel wm = null;
+        for(int i=0;i<WorksRepository.getInstance().getmWorksList().size();i++) {
+            if(WorksRepository.getInstance().getmWorksList().get(i).getId().equals(id)) {
+                delNum = i;
+                wm = WorksRepository.getInstance().getmWorksList().get(i);
+                WorksRepository.getInstance().getmWorksList().remove(i);
+                Log.d("MyTag", "remove from all tasks");
             }
         }
+
+        WorksRepository.getInstance().getmWorkListDone().remove(wm);
     } //deleteWork
 
+    public void editWork(UUID id, WorksModel worksModel){
 
-
-    public void deleteWorkDone(String title, String detail){
-        WorksRepository mWorksRepository = WorksRepository.getInstanceDone();
-//        WorksRepository.getInstance().getmWorksList().remove(worksModel);
-        for(int i=0;i<mWorksRepository.getmWorkListDone().size();i++) {
-            if(mWorksRepository.getmWorkListDone().get(i).getTitle().contains(title) &&
-                    mWorksRepository.getmWorkListDone().get(i).getDetail().contains(detail))
-            {
-                mWorksRepository.getmWorkListDone().remove(i);
-            }
-        }
-    } //deleteWork
-
-
-
-    public void editWork(String newTitle, String newDetail){
-        WorksRepository mWorksRepository = WorksRepository.getInstance();
-        for(int i=0;i<mWorksRepository.getmWorksList().size();i++) {
-            if(mWorksRepository.getmWorksList().get(i).getTitle().contains(newTitle) &&
-                    mWorksRepository.getmWorksList().get(i).getDetail().contains(newDetail))
-            {
-                WorksModel worksModel = new WorksModel();
-                worksModel.setTitle(newTitle);
-                worksModel.setDetail(newDetail);
-                mWorksRepository.getmWorksList().set(i, worksModel);
+        for(int i=0;i<WorksRepository.getInstance().getmWorksList().size();i++) {
+            if(WorksRepository.getInstance().getmWorksList().get(i).getId().equals(id)) {
+                Log.d("MyTag2", "edit");
+                WorksRepository.getInstance().getmWorksList().set(i, worksModel);
             }
         }
     }//editWork
 
-    public void editWorkDone(String newTitle, String newDetail){
-        WorksRepository mWorksRepository = WorksRepository.getInstanceDone();
-        for(int i=0;i<mWorksRepository.getmWorkListDone().size();i++) {
-            if(mWorksRepository.getmWorkListDone().get(i).getTitle().contains(newTitle) &&
-                    mWorksRepository.getmWorkListDone().get(i).getDetail().contains(newDetail))
-            {
-                WorksModel worksModel = new WorksModel();
-                worksModel.setTitle(newTitle);
-                worksModel.setDetail(newDetail);
-                mWorksRepository.getmWorkListDone().set(i, worksModel);
+    public void editWorkDone(UUID id, WorksModel worksModel){
+
+        for(int i=0;i<WorksRepository.getInstance().getmWorkListDone().size();i++) {
+            if(WorksRepository.getInstance().getmWorkListDone().get(i).getId().equals(id)) {
+                Log.d("MyTag2", "edit done");
+                WorksRepository.getInstance().getmWorkListDone().set(i, worksModel);
             }
         }
-    }//editWork
-
+    }//editWorkDone
+    
 }
