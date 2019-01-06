@@ -13,14 +13,14 @@ public class WorksModel {
     private boolean mDone;
 
     public WorksModel() {
-//        this(UUID.randomUUID());
-    Id = UUID.randomUUID();
+        this(UUID.randomUUID());
+//    Id = UUID.randomUUID();
     }
 
-//    public WorksModel(UUID id) {
-//        Id = id;
-////        mDate = RandomData.randomDate();
-//    }
+    public WorksModel(UUID id) {
+        Id = id;
+//        mDate = RandomData.randomDate();
+    }
 
     public boolean isDone() {
         return mDone;
