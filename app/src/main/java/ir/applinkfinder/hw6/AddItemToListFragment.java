@@ -34,16 +34,12 @@ public class AddItemToListFragment extends Fragment {
     private ArrayList<WorksModel> mWorksList;
     ListFragment mListFragment;
     private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mAdapterDone;
     private EditText mEditTextAddTitle;
     private EditText mEditTextAddDetail;
     private EditText mEditTextAddDate;
     private EditText mEditTextAddHour;
     private ImageButton mImageButtonAdd;
-
-    private ImageButton mImageButtonDone;
-    private ImageButton mImageButtonEdit;
-    private ImageButton mImageButtonDelete;
-
 
     public AddItemToListFragment() {
         // Required empty public constructor
