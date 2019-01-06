@@ -98,7 +98,8 @@ public class AddItemToListFragment extends Fragment {
     public void insertItem(){
         mListFragment = new ListFragment();
 
-        WorksRepository mWorksRepository = WorksRepository.getInstance();
+//        WorksRepository mWorksRepository = WorksRepository.getInstance();
+        WorksRepository mWorksRepository = WorksRepository.getInstance(getActivity());
         List<WorksModel> list = mWorksRepository.getmWorksList();
         mAdapter = mListFragment.new MyAdapter(list);
 
@@ -106,7 +107,7 @@ public class AddItemToListFragment extends Fragment {
         worksModel.setTitle(mEditTextAddTitle.getText().toString());
         worksModel.setDetail(mEditTextAddDetail.getText().toString());
 //        worksModel.setDate(new Date());
-        worksModel.setHour(mEditTextAddHour.getText().toString());
+//        worksModel.setHour(mEditTextAddHour.getText().toString());
 
         mWorksRepository.addWork(worksModel);
 

@@ -18,6 +18,8 @@
         </activity>
         <activity android:name=".AddItemToListActivity">
         </activity>
+        <activity android:name=".EditDeleteDoneActivity">
+        </activity>
     </application>
 
 </manifest>

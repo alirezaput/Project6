@@ -7,4 +7,5 @@
     <string name="tab_undone">کارهای انجام شده</string>
     <string name="toast_delete_task">برنامه مورد نظر شما با موفقیت حذف شد!</string>
     <string name="toast_insert_item">برنامه روزانه اضافه شد.</string>
+    <string name="actionbar_editdeletedone_title">ویرایش برنامه هفتگی</string>
 </resources>
