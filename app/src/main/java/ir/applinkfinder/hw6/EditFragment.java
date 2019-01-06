@@ -57,8 +57,8 @@ public class EditFragment extends Fragment {
         mEditTextDetail = view.findViewById(R.id.edittext_edit_detail);
         mButtonEditDone = view.findViewById(R.id.imagebutton_edit_done);
 
-        mEditTextTitle.setText(WorksRepository.getInstance().getWork(work_ID).getTitle());
-        mEditTextDetail.setText(WorksRepository.getInstance().getWork(work_ID).getDetail());
+        mEditTextTitle.setText(WorksRepository.getInstance(getActivity()).getWork(work_ID).getTitle());
+        mEditTextDetail.setText(WorksRepository.getInstance(getActivity()).getWork(work_ID).getDetail());
 
         mButtonEditDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +75,7 @@ public class EditFragment extends Fragment {
     public void editItem(){
         mListFragment = new ListFragment();
 
-        WorksRepository mWorksRepository = WorksRepository.getInstance();
+        WorksRepository mWorksRepository = WorksRepository.getInstance(getActivity());
         List<WorksModel> list = mWorksRepository.getmWorksList();
         List<WorksModel> listDone = mWorksRepository.getmWorkListDone();
 
