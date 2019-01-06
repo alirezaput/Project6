@@ -9,7 +9,7 @@ public class WorksModel {
     private String mTitle;
     private String mDetail;
     private Date mDate;
-    private String mHour;
+    private Date mHour;
     private boolean mDone;
 
     public WorksModel() {
@@ -58,11 +58,11 @@ public class WorksModel {
         mDate = date;
     }
 
-    public String getHour() {
+    public Date getHour() {
         return mHour;
     }
 
-    public void setHour(String hour) {
+    public void setHour(Date hour) {
         mHour = hour;
     }
 }
