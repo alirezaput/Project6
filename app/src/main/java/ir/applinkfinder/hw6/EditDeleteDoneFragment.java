@@ -132,11 +132,11 @@ public class EditDeleteDoneFragment extends Fragment {
 //        mEditTextTitle.setText(title);
 //        mEditTextDetail.setText(detail);
 
-        WorksModel wm = WorksRepository.getInstance().getWork(work_id);
+        WorksModel wm = WorksRepository.getInstance(getActivity()).getWork(work_id);
         String s = wm.getTitle();
         Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-        mTextViewTitle.setText(WorksRepository.getInstance().getWork(work_id).getTitle());
-        mTextViewDetail.setText(WorksRepository.getInstance().getWork(work_id).getDetail());
+        mTextViewTitle.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getTitle());
+        mTextViewDetail.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getDetail());
 //        mEditTextTitle.setText(mWorksModel.getTitle());
 //        mEditTextDetail.setText(mWorksModel.getDetail());
 
@@ -248,20 +248,20 @@ public class EditDeleteDoneFragment extends Fragment {
 
         mListFragment = new ListFragment();
 
-        List<WorksModel> list = WorksRepository.getInstance().getmWorksList();
+        List<WorksModel> list = WorksRepository.getInstance(getActivity()).getmWorksList();
         mAdapter = mListFragment.new MyAdapter(list);
 
-        List<WorksModel> listDone = WorksRepository.getInstance().getmWorkListDone();
+        List<WorksModel> listDone = WorksRepository.getInstance(getActivity()).getmWorkListDone();
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
-        WorksRepository.getInstance().getWork(work_id).setTitle(mTextViewTitle.getText().toString());
-        WorksRepository.getInstance().getWork(work_id).setDetail(mTextViewDetail.getText().toString());
+        WorksRepository.getInstance(getActivity()).getWork(work_id).setTitle(mTextViewTitle.getText().toString());
+        WorksRepository.getInstance(getActivity()).getWork(work_id).setDetail(mTextViewDetail.getText().toString());
 
-        WorksModel currentWorksModel = WorksRepository.getInstance().getWork(work_id);
+        WorksModel currentWorksModel = WorksRepository.getInstance(getActivity()).getWork(work_id);
 
-        WorksRepository.getInstance().addWorkDone(currentWorksModel);
+        WorksRepository.getInstance(getActivity()).addWorkDone(currentWorksModel);
 
-        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance().getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
 
         mAdapter.notifyItemInserted(0);
 
