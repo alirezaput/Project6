@@ -101,9 +101,8 @@ public class ListFragment extends Fragment {
         updateUI();
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
 
-//        WorksRepository worksRepository = WorksRepository.getInstance();
+        WorksRepository worksRepository = WorksRepository.getInstance();
         if (tabNum == 0){
-            WorksRepository worksRepository = WorksRepository.getInstance();
 //            mWorksList = worksRepository.getAllWork();
             mWorksList = worksRepository.getmWorksList();
 
@@ -118,8 +117,7 @@ public class ListFragment extends Fragment {
             }
         }
         else if (tabNum == 1){
-            WorksRepository worksRepository = WorksRepository.getInstanceDone();
-            mWorksList = worksRepository.getDoneWork();
+//            mWorksList = worksRepository.getDoneWork();
             mWorksList = worksRepository.getmWorkListDone();
 
             if (mWorksList.size()==0){
@@ -147,7 +145,7 @@ public class ListFragment extends Fragment {
             mCrimeAdapter = new MyAdapter(works);
             mRecyclerView.setAdapter(mCrimeAdapter);
         } else {
-//            mCrimeAdapter.setCrimes(crimes);
+            mCrimeAdapter.setCrimes(works);
             mCrimeAdapter.notifyDataSetChanged();
         }
     }//updateUI
@@ -163,31 +161,32 @@ public class ListFragment extends Fragment {
         private ImageView mImageViewGmailIcon;
 //        private ImageView letterImageView;
 
-        private WorksModel mCrime;
+        private WorksModel mWorkModel;
 
-        public CrimeHolder(@NonNull View itemView) {
+        public CrimeHolder(@NonNull final View itemView) {
             super(itemView);
 
-            mTitleTextView = itemView.findViewById(R.id.list_item_crime_title);
-            mDateTextView = itemView.findViewById(R.id.list_item_crime_date);
-            mDetailTextView = itemView.findViewById(R.id.list_item_crimed_detail);
+            mTitleTextView      = itemView.findViewById(R.id.list_item_crime_title);
+            mDateTextView       = itemView.findViewById(R.id.list_item_crime_date);
+            mDetailTextView     = itemView.findViewById(R.id.list_item_crimed_detail);
             mImageViewGmailIcon = itemView.findViewById(R.id.gmailitem_letter);
 
-//            letterImageView = itemView.findViewById(R.id.gmailitem_letter);
+//            Toast.makeText(getActivity(), String.valueOf(mCrimesss.getId()), Toast.LENGTH_SHORT).show();
 
+//            mCrimeAdapter.notifyDataSetChanged();
 //             Edit - Delete - Done
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() { // har jaye view click kardim, listener kari anjam dahad
                 @Override
                 public void onClick(View v) {
-//                    Toast.makeText(getActivity(), mCrime.getTitle() + " clicked!", Toast.LENGTH_LONG).show();
-                    Intent intent = EditDeleteDoneActivity.newIntent(getActivity(), mTitleTextView.getText().toString(), mDetailTextView.getText().toString());
+                    Intent intent = EditDeleteDoneActivity.newIntent(getActivity(), mWorkModel.getId());
                     startActivity(intent);
                 }
             });
+
         }
 
         public void bind(WorksModel worksModel) {
-            mCrime = worksModel;
+            mWorkModel = worksModel;
             mTitleTextView.setText(worksModel.getTitle());
             mDetailTextView.setText(worksModel.getDetail());
 //            mDateTextView.setText(worksModel.getDate().toString());
