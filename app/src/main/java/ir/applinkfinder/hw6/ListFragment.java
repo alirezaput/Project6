@@ -101,7 +101,7 @@ public class ListFragment extends Fragment {
         updateUI();
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
 
-        WorksRepository worksRepository = WorksRepository.getInstance();
+        WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         if (tabNum == 0){
 //            mWorksList = worksRepository.getAllWork();
             mWorksList = worksRepository.getmWorksList();
@@ -139,7 +139,7 @@ public class ListFragment extends Fragment {
     }
 
     private void updateUI() {
-        WorksRepository worksRepository = WorksRepository.getInstance();
+        WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         List<WorksModel> works = worksRepository.getmWorksList();
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new MyAdapter(works);
