@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.UUID;
 
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
@@ -25,6 +26,9 @@ public class MyDialogFragment extends DialogFragment {
 
     private static final String ARG_TITLE = "args_title";
     private static final String ARG_DETAIL = "args_detail";
+//    private static final String ARG_WORKMODEL = "args_workmodel";
+    private static final String ARG_WORKMODEL_ID = "args_workmodel_id";
+
     private Button mButtonOk;
     private Button mButtonCancel;
 
@@ -32,8 +36,10 @@ public class MyDialogFragment extends DialogFragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.Adapter mAdapterDone;
 
-    private String title;
-    private String detail;
+//    private String title;
+//    private String detail;
+//    private WorksModel mWorksModel;
+    private UUID workId;
 
     public MyDialogFragment() {
         // Required empty public constructor
@@ -44,8 +50,10 @@ public class MyDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            title = getArguments().getString(ARG_TITLE);
-            detail = getArguments().getString(ARG_DETAIL);
+//            title = getArguments().getString(ARG_TITLE);
+//            detail = getArguments().getString(ARG_DETAIL);
+//            mWorksModel = (WorksModel) getArguments().getSerializable(ARG_WORKMODEL);
+            workId = (UUID) getArguments().getSerializable(ARG_WORKMODEL_ID);
         }
 //        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
     }
@@ -69,7 +77,8 @@ public class MyDialogFragment extends DialogFragment {
         mButtonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteItem(title, detail);
+                deleteItem(workId);
+//                deleteItem(title, detail);
                 dismiss();
             }
         });
@@ -78,25 +87,24 @@ public class MyDialogFragment extends DialogFragment {
     }//onCreateView
 
     // ----------------------------- deleteItem Method: ----------------------------
-    public void deleteItem(String title, String detail){
+    public void deleteItem(UUID id){
         mListFragment = new ListFragment();
 
-        WorksRepository mWorksRepository = WorksRepository.getInstance();
-        WorksRepository mWorksRepositoryDone = WorksRepository.getInstanceDone();
-
-        List<WorksModel> list = mWorksRepository.getmWorksList();
-        List<WorksModel> listDone = mWorksRepositoryDone.getmWorkListDone();
+        List<WorksModel> list = WorksRepository.getInstance().getmWorksList();
+        List<WorksModel> listDone = WorksRepository.getInstance().getmWorkListDone();
 
         mAdapter = mListFragment.new MyAdapter(list);
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
+//        WorksRepository.getInstance().deleteWorkDone(id);
+        WorksRepository.getInstance().deleteWork(id);
 
-        mWorksRepository.deleteWork(title, detail);
-        mWorksRepositoryDone.deleteWorkDone(title, detail);
-//        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance().getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "All Works: "   + String.valueOf(WorksRepository.getInstance().getmWorksList().size()), Toast.LENGTH_SHORT).show();
+
         Toast.makeText(getActivity(), R.string.toast_delete_task, Toast.LENGTH_SHORT).show();
 
-        mAdapter.notifyItemRemoved(0);
+        mAdapterDone.notifyItemRemoved(0);
         if (mAdapter == null) {
             mListFragment.mRecyclerView.setAdapter(mAdapter);
             mListFragment.mRecyclerView.setAdapter(mAdapterDone);
@@ -106,17 +114,17 @@ public class MyDialogFragment extends DialogFragment {
             mAdapterDone.notifyDataSetChanged();
         }
 
+
 //        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
 
     }//deleteItem
     // --------------------------------------------------------------------------------------
 
     // Alert Dialog Instance
-    public static MyDialogFragment newInstance(String title, String detail) {
+    public static MyDialogFragment newInstance(UUID workId) {
         MyDialogFragment frag = new MyDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, title);
-        args.putString(ARG_DETAIL, detail);
+        args.putSerializable(ARG_WORKMODEL_ID, workId);
         frag.setArguments(args);
         return frag;
     }//newInstance
