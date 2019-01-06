@@ -90,17 +90,17 @@ public class MyDialogFragment extends DialogFragment {
     public void deleteItem(UUID id){
         mListFragment = new ListFragment();
 
-        List<WorksModel> list = WorksRepository.getInstance().getmWorksList();
-        List<WorksModel> listDone = WorksRepository.getInstance().getmWorkListDone();
+        List<WorksModel> list = WorksRepository.getInstance(getActivity()).getmWorksList();
+        List<WorksModel> listDone = WorksRepository.getInstance(getActivity()).getmWorkListDone();
 
         mAdapter = mListFragment.new MyAdapter(list);
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
 //        WorksRepository.getInstance().deleteWorkDone(id);
-        WorksRepository.getInstance().deleteWork(id);
+        WorksRepository.getInstance(getActivity()).deleteWork(id);
 
-        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance().getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), "All Works: "   + String.valueOf(WorksRepository.getInstance().getmWorksList().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "All Works: "   + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorksList().size()), Toast.LENGTH_SHORT).show();
 
         Toast.makeText(getActivity(), R.string.toast_delete_task, Toast.LENGTH_SHORT).show();
 
