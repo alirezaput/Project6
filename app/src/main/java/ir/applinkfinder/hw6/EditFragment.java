@@ -71,6 +71,13 @@ public class EditFragment extends Fragment {
         return view;
     }//onCreateView
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        WorksModel worksModel = WorksRepository.getInstance(getActivity()).getWork(work_ID);
+        WorksRepository.getInstance(getActivity()).update(worksModel);
+    }
+
     // --------------------------- editItem
     public void editItem(){
         mListFragment = new ListFragment();
@@ -93,6 +100,8 @@ public class EditFragment extends Fragment {
 //        mWorksRepository.editWorkDone(work_ID, newTitle, newDetail);
 
         mWorksRepository.editWork(work_ID, worksModel);
+//        WorksRepository.getInstance(getActivity()).update(worksModel);
+
         mWorksRepository.editWorkDone(work_ID, worksModel);
 
 //        mAdapter.notifyItemRemoved(0);
