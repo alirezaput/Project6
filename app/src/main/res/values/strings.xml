@@ -8,4 +8,21 @@
     <string name="toast_delete_task">برنامه مورد نظر شما با موفقیت حذف شد!</string>
     <string name="toast_insert_item">برنامه روزانه اضافه شد.</string>
     <string name="actionbar_editdeletedone_title">ویرایش برنامه هفتگی</string>
+    <string name="login_username">نام کاربری</string>
+    <string name="login_password">رمز عبور</string>
+
+    <string name="login">Login</string>
+    <string name="login_signuphere">SignUp Here</string>
+
+    <string name="signup_name">نام</string>
+    <string name="signup_email">آدرس ایمیل</string>
+    <string name="signup_confirm_password">تایید رمز عبور</string>
+    <string name="signup">SignUp</string>
+
+    <string name="toast_passwords_mismatch">Passwords Do Not Match!</string>
+    <string name="toast_username_passwords_mismatch">Username and Password Do Not Match!</string>
+
+
+
+
 </resources>
