@@ -175,7 +175,8 @@ public class EditDeleteDoneFragment extends Fragment {
         return view;
     }//onCreateView
 
-//    // ----------------------------- deleteItem Method: ----------------------------
+
+    //    // ----------------------------- deleteItem Method: ----------------------------
 //    public void deleteItem(String title, String detail){
 //        mListFragment = new ListFragment();
 //
@@ -254,13 +255,17 @@ public class EditDeleteDoneFragment extends Fragment {
         List<WorksModel> listDone = WorksRepository.getInstance(getActivity()).getmWorkListDone();
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
-        WorksRepository.getInstance(getActivity()).getWork(work_id).setTitle(mTextViewTitle.getText().toString());
-        WorksRepository.getInstance(getActivity()).getWork(work_id).setDetail(mTextViewDetail.getText().toString());
+//        WorksRepository.getInstance(getActivity()).getWork(work_id).setTitle(mTextViewTitle.getText().toString());
+//        WorksRepository.getInstance(getActivity()).getWork(work_id).setDetail(mTextViewDetail.getText().toString());
 
         WorksModel currentWorksModel = WorksRepository.getInstance(getActivity()).getWork(work_id);
 
-        WorksRepository.getInstance(getActivity()).addWorkDone(currentWorksModel);
+currentWorksModel.setTitle(mTextViewTitle.getText().toString());
+currentWorksModel.setDetail(mTextViewDetail.getText().toString());
+currentWorksModel.setDone(true);
 
+
+        WorksRepository.getInstance(getActivity()).addWorkDone(currentWorksModel);
         Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
 
         mAdapter.notifyItemInserted(0);
