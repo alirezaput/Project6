@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -103,22 +104,25 @@ public class ListFragment extends Fragment {
 
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         if (tabNum == 0){
+
 //            mWorksList = worksRepository.getAllWork();
             mWorksList = worksRepository.getmWorksList();
 
-
-            if (mWorksList.size()==0){
-                mRecyclerView.setVisibility(View.GONE);
-                mImageViewEmptyList.setVisibility(View.VISIBLE);
-            }
-            else {
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mImageViewEmptyList.setVisibility(View.GONE);
+            if(mWorksList != null){
+                if (mWorksList.size()==0){
+                    mRecyclerView.setVisibility(View.GONE);
+                    mImageViewEmptyList.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mImageViewEmptyList.setVisibility(View.GONE);
+                }
             }
         }
         else if (tabNum == 1){
-//            mWorksList = worksRepository.getDoneWork();
+////            mWorksList = worksRepository.getDoneWork();
             mWorksList = worksRepository.getmWorkListDone();
+//            mWorksList = worksRepository.getmWorksList();
 
             if (mWorksList.size()==0){
                 mRecyclerView.setVisibility(View.GONE);
@@ -129,18 +133,17 @@ public class ListFragment extends Fragment {
                 mImageViewEmptyList.setVisibility(View.GONE);
             }
         }
-//        else
-//            mWorksList = worksRepository.getUndoneWork();
-
         //setAdapter
+        Toast.makeText(getActivity(), String.valueOf(mWorksList.size()), Toast.LENGTH_SHORT).show(); //test
         MyAdapter myAdapter = new MyAdapter(mWorksList);
         mRecyclerView.setAdapter(myAdapter);
 //        myAdapter(mWorksList);
-    }
+    }//onResume
 
     private void updateUI() {
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         List<WorksModel> works = worksRepository.getmWorksList();
+
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new MyAdapter(works);
             mRecyclerView.setAdapter(mCrimeAdapter);
@@ -148,6 +151,19 @@ public class ListFragment extends Fragment {
             mCrimeAdapter.setCrimes(works);
             mCrimeAdapter.notifyDataSetChanged();
         }
+
+
+//        //test
+//        List<WorksModel> worksDone = worksRepository.getmWorkListDone();
+//
+//        if (mCrimeAdapter == null) {
+//            mCrimeAdapter = new MyAdapter(worksDone);
+//            mRecyclerView.setAdapter(mCrimeAdapter);
+//        } else {
+//            mCrimeAdapter.setCrimes(worksDone);
+//            mCrimeAdapter.notifyDataSetChanged();
+//        }
+
     }//updateUI
 
     // View Holder
@@ -163,7 +179,7 @@ public class ListFragment extends Fragment {
 
         private WorksModel mWorkModel;
 
-        public CrimeHolder(@NonNull final View itemView) {
+        public CrimeHolder(@NonNull View itemView) {
             super(itemView);
 
             mTitleTextView      = itemView.findViewById(R.id.list_item_crime_title);
@@ -182,13 +198,17 @@ public class ListFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-
         }
 
         public void bind(WorksModel worksModel) {
             mWorkModel = worksModel;
+            Toast.makeText(getActivity(), String.valueOf(worksModel.getTitle()), Toast.LENGTH_SHORT).show(); //test
             mTitleTextView.setText(worksModel.getTitle());
             mDetailTextView.setText(worksModel.getDetail());
+
+//            mTitleTextView.setText("AAAA");
+//            mDetailTextView.setText("BBBB");
+
 //            mDateTextView.setText(worksModel.getDate().toString());
 //            mSolvedImageView.setVisibility(worksModel.isSolved() == true ? View.VISIBLE : View.GONE);
 
@@ -208,13 +228,12 @@ public class ListFragment extends Fragment {
     }
     // --------------------------------- View Holder
 
-
-    // ----------------------------- Adapter
-    public class MyAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    // ----------------------------- Adapter -----------------------------------
+    public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private List<WorksModel> mCrimes;
-        private String letter;
-        ColorGenerator generator = ColorGenerator.MATERIAL;
+
+//        ColorGenerator generator = ColorGenerator.MATERIAL;
 
         public MyAdapter(List<WorksModel> crimes) {
             mCrimes = crimes;
@@ -226,7 +245,7 @@ public class ListFragment extends Fragment {
 
         @NonNull
         @Override
-        public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = inflater.inflate(R.layout.list_item_crime, parent, false);
             CrimeHolder crimeHolder = new CrimeHolder(view);
@@ -234,17 +253,19 @@ public class ListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {
-            WorksModel crime = mCrimes.get(position);
-            holder.bind(crime);
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            Toast.makeText(getActivity(), String.valueOf(mCrimes.get(position).getTitle()), Toast.LENGTH_SHORT).show(); // test
+            WorksModel worksModel = mCrimes.get(position);
+//            holder.bind(worksModel);
+            ((CrimeHolder) holder).bind(worksModel);
         }
 
         @Override
         public int getItemCount() {
             return mCrimes.size();
         }
-    }//Adapter
-
+    }
+    //---------------------------------- Adapter ------------------------------------
 
     public static ListFragment newInstance(int tabType){ //@NonNull yani crimeId nemitune Null bashe
         ListFragment fragment = new ListFragment();
