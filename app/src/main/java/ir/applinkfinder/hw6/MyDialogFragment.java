@@ -96,7 +96,7 @@ public class MyDialogFragment extends DialogFragment {
         mAdapter = mListFragment.new MyAdapter(list);
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
-//        WorksRepository.getInstance().deleteWorkDone(id);
+        WorksRepository.getInstance(getActivity()).deleteWorkDone(id);
         WorksRepository.getInstance(getActivity()).deleteWork(id);
 
         Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
