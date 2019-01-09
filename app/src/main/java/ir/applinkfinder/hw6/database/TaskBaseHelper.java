@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class TaskBaseHelper extends SQLiteOpenHelper {
 
+    SQLiteDatabase db;
     //constructor
     public TaskBaseHelper(Context context){
         super(context, TaskDbSchema.NAME, null, TaskDbSchema.VERSION); //name: esme db
@@ -13,6 +14,8 @@ public class TaskBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        this.db = db;
+
         // db.execSQL(create table myTableName(Col1Name text, Col2Name integer, ...));
         db.execSQL("create table " + TaskDbSchema.TaskTable.NAME + "(" +
                 "_id integer primary key autoincrement, " +
@@ -24,11 +27,23 @@ public class TaskBaseHelper extends SQLiteOpenHelper {
                 TaskDbSchema.TaskTable.Cols.DONE +
                 ")"
         );
+
+        //table 2: contacts
+        db.execSQL("create table " + TaskDbSchema.ContactsTable.NAME + "(" +
+                "_id integer primary key not null, " +
+                TaskDbSchema.ContactsTable.Cols.NAME + ", " +
+                TaskDbSchema.ContactsTable.Cols.EMAIL + ", " +
+                TaskDbSchema.ContactsTable.Cols.USERNAME + ", " +
+                TaskDbSchema.ContactsTable.Cols.PASSWORD +
+                ")"
+        );
     }
 
     //alter kardan: ezafe kardane column and .... dar onUpgrade anjam mishe
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        String query = "Drop table if exists " + TaskDbSchema.ContactsTable.NAME;
+        db.execSQL(query);
+        onCreate(db);
     }
 }
