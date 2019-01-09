@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ir.applinkfinder.hw6.contacts.Contact;
 import ir.applinkfinder.hw6.database.TaskBaseHelper;
 import ir.applinkfinder.hw6.database.TaskCursorWrapper;
 import ir.applinkfinder.hw6.database.TaskDbSchema;
@@ -19,7 +20,6 @@ public class WorksRepository {
     private SQLiteDatabase mDataBase;
     private Context mContext;
     List<WorksModel> mWorksListDone;// = new ArrayList<>();
-
     private static WorksRepository instance;
 //    private static WorksRepository instanceDone;
     private static WorksRepository instanceUndone;
@@ -159,40 +159,33 @@ public class WorksRepository {
         return contentValues;
     }
 
+    public ContentValues getContentValuesContacts(Contact contact){
+//        String query = "select * from " + TaskDbSchema.ContactsTable.NAME;
+//        Cursor cursor = mDataBase.rawQuery(query, null);
+//        int numOfContacts = cursor.getCount();
 
-
-    public ContentValues getContentValuesDone(WorksModel worksModel){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TaskDbSchema.TaskTable.Cols.UUID, worksModel.getId().toString());
-        contentValues.put(TaskDbSchema.TaskTable.Cols.TITLE, worksModel.getTitle());
-        contentValues.put(TaskDbSchema.TaskTable.Cols.DETAIL, worksModel.getDetail());
-//        contentValues.put(TaskDbSchema.TaskTable.Cols.DATE, worksModel.getDate().getTime()); //getTime haman TimeStamp ra bar migardune
-//        contentValues.put(TaskDbSchema.TaskTable.Cols.HOUR, worksModel.getHour().getTime()); //getTime haman TimeStamp ra bar migardune
+//        contentValues.put(TaskDbSchema.ContactsTable.Cols.ID, numOfContacts);
+        contentValues.put(TaskDbSchema.ContactsTable.Cols.NAME, contact.getName());
+        contentValues.put(TaskDbSchema.ContactsTable.Cols.EMAIL, contact.getEmail());
+        contentValues.put(TaskDbSchema.ContactsTable.Cols.USERNAME, contact.getUsername());
+        contentValues.put(TaskDbSchema.ContactsTable.Cols.PASSWORD, contact.getPassword());
 
-        contentValues.put(TaskDbSchema.TaskTable.Cols.DATE, ""); //getTime haman TimeStamp ra bar migardune
-        contentValues.put(TaskDbSchema.TaskTable.Cols.HOUR, ""); //getTime haman TimeStamp ra bar migardune
-
-//        contentValues.put(TaskDbSchema.TaskTable.Cols.DONE, worksModel.isDone() ? 1 : 0); //if true: 1, ---- else false: 0
-        contentValues.put(TaskDbSchema.TaskTable.Cols.DONE, 1);
         return contentValues;
     }
 
 
-
-
-        private TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {
-            Cursor cursor = mDataBase.query(
-                    TaskDbSchema.TaskTable.NAME,
-                    null,
-                    whereClause,
-                    whereArgs,
-                    null,
-                    null,
-                    null);
-
-            return new TaskCursorWrapper(cursor);
-
-    }//getWork
+    private TaskCursorWrapper queryTask(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDataBase.query(
+                TaskDbSchema.TaskTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null);
+        return new TaskCursorWrapper(cursor);
+    }
 
 
 //    public WorksModel getWorkDone(UUID id){
@@ -210,8 +203,7 @@ public class WorksRepository {
     }
 
     public void addWorkDone(WorksModel worksModel){
-        Context context = mContext.getApplicationContext(); // ///////////////////////////
-        WorksRepository.getInstance(context).getmWorkListDone().add(worksModel);
+        WorksRepository.getInstance(mContext).getmWorkListDone().add(worksModel);
 //        mDataBase.insert(TaskDbSchema.TaskTable.NAME, null, getContentValuesDone(worksModel));
     }
 
@@ -232,16 +224,15 @@ public class WorksRepository {
     } //deleteWork
 
     public void deleteWorkDone(UUID id){
-        Context context = mContext.getApplicationContext(); // ////////////////
         WorksModel wm = null;
-        for(int i=0;i<WorksRepository.getInstance(context).getmWorksList().size();i++) {
-            if(WorksRepository.getInstance(context).getmWorksList().get(i).getId().equals(id)) {
-                wm = WorksRepository.getInstance(context).getmWorkListDone().get(i);
-                WorksRepository.getInstance(context).getmWorksList().remove(i);
+        for(int i=0;i<WorksRepository.getInstance(mContext).getmWorksList().size();i++) {
+            if(WorksRepository.getInstance(mContext).getmWorksList().get(i).getId().equals(id)) {
+                wm = WorksRepository.getInstance(mContext).getmWorkListDone().get(i);
+                WorksRepository.getInstance(mContext).getmWorksList().remove(i);
                 Log.d("MyTag", "remove from all tasks");
             }
         }
-        WorksRepository.getInstance(context).getmWorkListDone().remove(wm);
+        WorksRepository.getInstance(mContext).getmWorkListDone().remove(wm);
     }
 
     public void update(WorksModel worksModel){
@@ -280,4 +271,39 @@ public class WorksRepository {
 //            }
 //        }
     }//editWorkDone
+
+    public void insertContact(Contact contact){
+//        String query = "select * from " + TaskDbSchema.ContactsTable.NAME;
+//        Cursor cursor = mDataBase.rawQuery(query, null);
+//        int numOfContacts = cursor.getCount();
+        mDataBase = new TaskBaseHelper(mContext).getWritableDatabase();
+        mDataBase.insert(TaskDbSchema.ContactsTable.NAME, null, getContentValuesContacts(contact));
+    }
+
+    public String searchContactPassword(String username){
+//        mDataBase = new TaskBaseHelper(mContext).getReadableDatabase();
+
+        String[] columns = new String[] {TaskDbSchema.ContactsTable.Cols.USERNAME, TaskDbSchema.ContactsTable.Cols.PASSWORD};
+        Cursor cursor = mDataBase.query(TaskDbSchema.ContactsTable.NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        String user;
+        String pass = "not found";
+        if (cursor.moveToFirst()){
+            do {
+                user = cursor.getString(0);
+                if (user.equals(username)){
+                    pass = cursor.getString(1);
+                    break;
+                }
+            }
+            while (cursor.moveToNext());
+        }
+        return pass;
+    }//searchContactPassword
 }
