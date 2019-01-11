@@ -1,10 +1,8 @@
 package ir.applinkfinder.hw6;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +16,6 @@ import java.util.UUID;
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MyDialogFragment extends DialogFragment {
 
     private static final String ARG_TITLE = "args_title";
@@ -36,9 +30,6 @@ public class MyDialogFragment extends DialogFragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.Adapter mAdapterDone;
 
-//    private String title;
-//    private String detail;
-//    private WorksModel mWorksModel;
     private UUID workId;
 
     public MyDialogFragment() {
@@ -50,9 +41,6 @@ public class MyDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-//            title = getArguments().getString(ARG_TITLE);
-//            detail = getArguments().getString(ARG_DETAIL);
-//            mWorksModel = (WorksModel) getArguments().getSerializable(ARG_WORKMODEL);
             workId = (UUID) getArguments().getSerializable(ARG_WORKMODEL_ID);
         }
 //        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
@@ -96,7 +84,7 @@ public class MyDialogFragment extends DialogFragment {
         mAdapter = mListFragment.new MyAdapter(list);
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
-        WorksRepository.getInstance(getActivity()).deleteWorkDone(id);
+//        WorksRepository.getInstance(getActivity()).deleteWorkDone(id);
         WorksRepository.getInstance(getActivity()).deleteWork(id);
 
         Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
@@ -113,10 +101,6 @@ public class MyDialogFragment extends DialogFragment {
             mAdapter.notifyDataSetChanged();
             mAdapterDone.notifyDataSetChanged();
         }
-
-
-//        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
-
     }//deleteItem
     // --------------------------------------------------------------------------------------
 
