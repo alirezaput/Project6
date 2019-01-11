@@ -34,12 +34,14 @@ import ir.applinkfinder.hw6.model.WorksRepository;
  */
 public class ListFragment extends Fragment {
     private static final String ARG_TAB_TYPE = "arg_tab_type";
+    private static final String ARG_CONTACT_ID = "arg_contact_id";
     public RecyclerView mRecyclerView;
     private MyAdapter mCrimeAdapter;
     private List<WorksModel> mWorksList;
     private FloatingActionButton mFloatingActionButtonAdd;
     private ImageView mImageViewEmptyList;
     private String firstLetter;
+    private int contactId;
 
     private int tabNum = 0;
     public ListFragment() {
@@ -67,7 +69,6 @@ public class ListFragment extends Fragment {
 
         myActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         myActionBar.setCustomView(textview);
-
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getActivity(), "AAA", Toast.LENGTH_SHORT).show();
-                Intent intent = AddItemToListActivity.newIntent(getActivity());
+                Intent intent = AddItemToListActivity.newIntent(getActivity(), contactId);
                 startActivity(intent);
             }
         });
@@ -101,6 +102,8 @@ public class ListFragment extends Fragment {
         mImageViewEmptyList.setVisibility(View.GONE);
         updateUI();
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
+        contactId = getArguments().getInt(ARG_CONTACT_ID);
+        Toast.makeText(getActivity(), "ListFragment Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
 
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         if (tabNum == 0){
@@ -134,13 +137,12 @@ public class ListFragment extends Fragment {
             }
         }
         //setAdapter
-        Toast.makeText(getActivity(), String.valueOf(mWorksList.size()), Toast.LENGTH_SHORT).show(); //test
         MyAdapter myAdapter = new MyAdapter(mWorksList);
         mRecyclerView.setAdapter(myAdapter);
 //        myAdapter(mWorksList);
     }//onResume
 
-    private void updateUI() {
+    public void updateUI() {
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         List<WorksModel> works = worksRepository.getmWorksList();
 
@@ -151,19 +153,6 @@ public class ListFragment extends Fragment {
             mCrimeAdapter.setCrimes(works);
             mCrimeAdapter.notifyDataSetChanged();
         }
-
-
-//        //test
-//        List<WorksModel> worksDone = worksRepository.getmWorkListDone();
-//
-//        if (mCrimeAdapter == null) {
-//            mCrimeAdapter = new MyAdapter(worksDone);
-//            mRecyclerView.setAdapter(mCrimeAdapter);
-//        } else {
-//            mCrimeAdapter.setCrimes(worksDone);
-//            mCrimeAdapter.notifyDataSetChanged();
-//        }
-
     }//updateUI
 
     // View Holder
@@ -202,12 +191,8 @@ public class ListFragment extends Fragment {
 
         public void bind(WorksModel worksModel) {
             mWorkModel = worksModel;
-            Toast.makeText(getActivity(), String.valueOf(worksModel.getTitle()), Toast.LENGTH_SHORT).show(); //test
             mTitleTextView.setText(worksModel.getTitle());
             mDetailTextView.setText(worksModel.getDetail());
-
-//            mTitleTextView.setText("AAAA");
-//            mDetailTextView.setText("BBBB");
 
 //            mDateTextView.setText(worksModel.getDate().toString());
 //            mSolvedImageView.setVisibility(worksModel.isSolved() == true ? View.VISIBLE : View.GONE);
@@ -254,7 +239,6 @@ public class ListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Toast.makeText(getActivity(), String.valueOf(mCrimes.get(position).getTitle()), Toast.LENGTH_SHORT).show(); // test
             WorksModel worksModel = mCrimes.get(position);
 //            holder.bind(worksModel);
             ((CrimeHolder) holder).bind(worksModel);
@@ -267,11 +251,12 @@ public class ListFragment extends Fragment {
     }
     //---------------------------------- Adapter ------------------------------------
 
-    public static ListFragment newInstance(int tabType){ //@NonNull yani crimeId nemitune Null bashe
+    public static ListFragment newInstance(int tabType, int contactId){ //@NonNull yani crimeId nemitune Null bashe
         ListFragment fragment = new ListFragment();
 
         Bundle args = new Bundle();
         args.putInt(ARG_TAB_TYPE, tabType);
+        args.putInt(ARG_CONTACT_ID, contactId);
         fragment.setArguments(args);
         return fragment;
     }//newInstance
