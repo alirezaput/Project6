@@ -4,14 +4,18 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.widget.Toast;
 
 // Adapter of ViewPager
-public class ViewPagerClass extends FragmentPagerAdapter{ //FragmentStatePagerAdapter {
+public class ViewPagerClass extends FragmentPagerAdapter{// implements MainActivity.OnAboutDataRecievedListener { //FragmentStatePagerAdapter {
     private Context mContext;
+    private int contactId;
 
-    public ViewPagerClass(Context context, FragmentManager fragmentManager) {
+    public ViewPagerClass(Context context, FragmentManager fragmentManager, int contactID) {
         super(fragmentManager);
         mContext = context;
+        contactId = contactID;
+        Toast.makeText(context.getApplicationContext(), "viewPagerClass Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
     }
 
     // This determines the fragment for each tab
@@ -19,11 +23,11 @@ public class ViewPagerClass extends FragmentPagerAdapter{ //FragmentStatePagerAd
     public Fragment getItem(int position) {
         if (position == 0) { //0
 //            return new DoneFragment();
-            return new ListFragment().newInstance(0); //0
+            return new ListFragment().newInstance(0, contactId); //0
         }
         else if (position == 1){ //1
 //            return new UndoneFragment();
-            return new ListFragment().newInstance(1); //1
+            return new ListFragment().newInstance(1, contactId); //1
         }
 //        else if (position == 2){
 ////            return new AllworksFragment();
