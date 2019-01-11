@@ -10,6 +10,7 @@ public class TaskDbSchema {
 
         public static final class Cols {        // Columns of Table
             public static final String UUID = "uuid";
+            public static final String CONTACT_ID = "contact_id";
             public static final String TITLE = "title";
             public static final String DETAIL = "detail";
             public static final String DATE = "date";
@@ -23,6 +24,7 @@ public class TaskDbSchema {
         public static final String NAME = "contacts"; // Table Name
 
         public static final class Cols {
+            public static final String CONTACT_ID = "contact_id";
             public static final String ID = "id";
             public static final String NAME = "name";
             public static final String USERNAME = "username";
