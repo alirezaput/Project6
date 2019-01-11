@@ -117,7 +117,6 @@ public class AddItemToListFragment extends Fragment {
         int contactId = ((AddItemToListActivity) getActivity()).getContactIdInAddItem();
         Toast.makeText(getActivity(), "AddItemToListFragment Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
         worksModel.setContactId(contactId);
-
         worksModel.setTitle(mEditTextAddTitle.getText().toString());
         worksModel.setDetail(mEditTextAddDetail.getText().toString());
 //        worksModel.setDate(new Date());
