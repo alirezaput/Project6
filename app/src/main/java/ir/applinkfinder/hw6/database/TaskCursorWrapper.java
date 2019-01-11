@@ -17,6 +17,7 @@ public class TaskCursorWrapper extends CursorWrapper {
     }
 
     public WorksModel getTask() {
+        int contactId = getInt(getColumnIndex(TaskDbSchema.TaskTable.Cols.CONTACT_ID));
         UUID uuid = UUID.fromString(getString(getColumnIndex(TaskDbSchema.TaskTable.Cols.UUID)));
         String title = getString(getColumnIndex(TaskDbSchema.TaskTable.Cols.TITLE));
         String detail = getString(getColumnIndex(TaskDbSchema.TaskTable.Cols.DETAIL));
@@ -25,6 +26,7 @@ public class TaskCursorWrapper extends CursorWrapper {
         boolean isDone = getInt(getColumnIndex(TaskDbSchema.TaskTable.Cols.DONE)) != 0;
 
         WorksModel worksModel = new WorksModel(uuid);
+        worksModel.setContactId(contactId);
         worksModel.setTitle(title);
         worksModel.setDetail(detail);
         worksModel.setDate(date);
