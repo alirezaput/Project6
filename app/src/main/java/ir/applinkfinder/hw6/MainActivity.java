@@ -6,25 +6,34 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
+import ir.applinkfinder.hw6.model.WorksRepository;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TabLayout tabLayout;
-    private String username;
+    private int contactId;
 
-    private static final String EXTRA_USERNAME = "ir.applinkfinder.hw6.extra_username";
+    private static final String EXTRA_CONTACT_ID = "ir.applinkfinder.hw6.extra_contact_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        username = getIntent().getStringExtra(EXTRA_USERNAME);
+        contactId = getIntent().getIntExtra(EXTRA_CONTACT_ID, -1);
+        Toast.makeText(this, "mainActivity Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
+
+        WorksRepository.getInstance(this).setContactID(contactId);
+
+        getContactIDinMainActivity();
 
         mViewPager = findViewById(R.id.viewPager);
 
-        ViewPagerClass adapter = new ViewPagerClass(this, getSupportFragmentManager());
+//        ViewPagerClass adapter = new ViewPagerClass(this, getSupportFragmentManager());
+        ViewPagerClass adapter = new ViewPagerClass(this, getSupportFragmentManager(), contactId);
 
         // Set the adapter onto the view pager
         mViewPager.setAdapter(adapter);
@@ -36,9 +45,19 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }//onCreate
 
-    public static Intent newIntent(Context context, String username){
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    public int getContactIDinMainActivity(){
+        return contactId;
+    }
+
+    public static Intent newIntent(Context context, int contactId){
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(EXTRA_USERNAME, username);
+        intent.putExtra(EXTRA_CONTACT_ID, contactId);
         return intent;
     }//newIntent
 }
