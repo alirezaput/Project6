@@ -28,7 +28,7 @@ public class WorksRepository {
     // ----------------------------------------------------------------------------------------------
     private WorksRepository(Context context){ // 1 constructor e private misazim ke dg kasi natune new sh kone
 //        mWorksList = new ArrayList<>();
-        mWorksListDone = new ArrayList<>();
+//        mWorksListDone = new ArrayList<>();
 
         mContext = context.getApplicationContext();
         mDataBase = new TaskBaseHelper(mContext).getWritableDatabase(); // qabl az getWritableDatabase, onCreate e CrimeBaseHelper ejra mishe
@@ -83,9 +83,9 @@ public class WorksRepository {
 
 
     public List<WorksModel> getmWorkListDone(){
-//        List<WorksModel> mWorksListDone = new ArrayList<>();
+        List<WorksModel> mWorksListDone = new ArrayList<>();
 
-        String whereClause = TaskDbSchema.TaskTable.Cols.DONE + " > 0 ";
+        String whereClause = TaskDbSchema.TaskTable.Cols.DONE + " = 1";
         TaskCursorWrapper taskCursorWrapper = queryTask(whereClause, null);
 
         try {
@@ -155,8 +155,9 @@ public class WorksRepository {
     // raw haye DB
     public ContentValues getContentValues(WorksModel worksModel){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TaskDbSchema.TaskTable.Cols.CONTACT_ID, worksModel.getContactId());
         contentValues.put(TaskDbSchema.TaskTable.Cols.UUID, worksModel.getId().toString());
+        contentValues.put(TaskDbSchema.TaskTable.Cols.CONTACT_ID, worksModel.getContactId());
+        contentValues.put(TaskDbSchema.TaskTable.Cols.DONE, worksModel.isDone());
         contentValues.put(TaskDbSchema.TaskTable.Cols.TITLE, worksModel.getTitle());
         contentValues.put(TaskDbSchema.TaskTable.Cols.DETAIL, worksModel.getDetail());
 //        contentValues.put(TaskDbSchema.TaskTable.Cols.DATE, worksModel.getDate().getTime()); //getTime haman TimeStamp ra bar migardune
@@ -277,7 +278,7 @@ public class WorksRepository {
 //        mDataBase.update(CrimeDbSchema.CrimeTable.NAME, contentValues, whereClause, new String[] {crime.getId().toString(), "8"});
     }
 
-    public void editWork(UUID id, WorksModel worksModel){
+    public void editWork(WorksModel worksModel){
 //        for(int i=0;i<WorksRepository.getInstance().getmWorksList().size();i++) {
 //            if(WorksRepository.getInstance().getmWorksList().get(i).getId().equals(id)) {
 //                Log.d("MyTag2", "edit");
@@ -286,22 +287,13 @@ public class WorksRepository {
 //        }
         ContentValues contentValues = getContentValues(worksModel);
         String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? ";
-//        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {worksModel.getId().toString()});
-        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {id.toString()});
-
+        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {worksModel.getId().toString()});
     }//editWork
 
-    public void editWorkDone(UUID id, WorksModel worksModel){
+    public void editWorkDone(WorksModel worksModel){
         ContentValues contentValues = getContentValues(worksModel);
-        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? " + " And " + TaskDbSchema.TaskTable.Cols.DONE + " = 1";
-        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {id.toString()});
-
-//        for(int i=0;i<WorksRepository.getInstance().getmWorkListDone().size();i++) {
-//            if(WorksRepository.getInstance().getmWorkListDone().get(i).getId().equals(id)) {
-//                Log.d("MyTag2", "edit done");
-//                WorksRepository.getInstance().getmWorkListDone().set(i, worksModel);
-//            }
-//        }
+        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? " + " And " + TaskDbSchema.TaskTable.Cols.DONE + " = ?";
+        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {worksModel.getId().toString(), "1"});
     }//editWorkDone
 
     public void insertContact(Contact contact){
