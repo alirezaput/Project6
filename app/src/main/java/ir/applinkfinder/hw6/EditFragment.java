@@ -63,7 +63,10 @@ public class EditFragment extends Fragment {
         mButtonEditDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editItem();
+                WorksModel worksModel = WorksRepository.getInstance(getActivity()).getWork(work_ID);
+                worksModel.setTitle(mEditTextTitle.getText().toString());
+                worksModel.setDetail(mEditTextDetail.getText().toString());
+                editItem(worksModel);
                 Toast.makeText(getActivity(), "Task Edited", Toast.LENGTH_SHORT).show();
             }
         });
@@ -79,7 +82,7 @@ public class EditFragment extends Fragment {
     }
 
     // --------------------------- editItem
-    public void editItem(){
+    public void editItem(WorksModel worksModel){
         mListFragment = new ListFragment();
 
         WorksRepository mWorksRepository = WorksRepository.getInstance(getActivity());
@@ -89,20 +92,9 @@ public class EditFragment extends Fragment {
         mAdapter = mListFragment.new MyAdapter(list);
         mAdapterDone = mListFragment.new MyAdapter(listDone);
 
-        String newTitle  = mEditTextTitle.getText().toString();
-        String newDetail = mEditTextDetail.getText().toString();
-        WorksModel worksModel = new WorksModel();
-        worksModel.setTitle(newTitle);
-        worksModel.setDetail(newDetail);
-//        Date newDate = mEditTextDate
+        WorksRepository.getInstance(getActivity()).editWork(worksModel);
 
-//        mWorksRepository.editWork(work_ID, newTitle, newDetail);
-//        mWorksRepository.editWorkDone(work_ID, newTitle, newDetail);
-
-        mWorksRepository.editWork(work_ID, worksModel);
-//        WorksRepository.getInstance(getActivity()).update(worksModel);
-
-        mWorksRepository.editWorkDone(work_ID, worksModel);
+        mWorksRepository.editWorkDone(worksModel);
 
 //        mAdapter.notifyItemRemoved(0);
         if (mAdapter == null) {
