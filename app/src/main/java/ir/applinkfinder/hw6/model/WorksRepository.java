@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import ir.applinkfinder.hw6.contacts.Contact;
+import ir.applinkfinder.hw6.database.ContactCursorWrapper;
 import ir.applinkfinder.hw6.database.TaskBaseHelper;
 import ir.applinkfinder.hw6.database.TaskCursorWrapper;
 import ir.applinkfinder.hw6.database.TaskDbSchema;
@@ -21,9 +23,8 @@ public class WorksRepository {
     private Context mContext;
     List<WorksModel> mWorksListDone;// = new ArrayList<>();
     private static WorksRepository instance;
-//    private static WorksRepository instanceDone;
-    private static WorksRepository instanceUndone;
-
+    private long contactRowInserted;
+    private int contactID;
     // ----------------------------------------------------------------------------------------------
     private WorksRepository(Context context){ // 1 constructor e private misazim ke dg kasi natune new sh kone
 //        mWorksList = new ArrayList<>();
@@ -33,28 +34,6 @@ public class WorksRepository {
         mDataBase = new TaskBaseHelper(mContext).getWritableDatabase(); // qabl az getWritableDatabase, onCreate e CrimeBaseHelper ejra mishe
     }//WorksRepository Constructor
 
-//    public List<WorksModel> getDoneWork(){
-//        WorksRepository worksRepository = WorksRepository.getInstance();
-//        List<WorksModel> DoneWorkList = new ArrayList<>();
-//        for (int i = 0; i < worksRepository.getmWorkListDone().size(); i++){
-//            if (worksRepository.getmWorksList().get(i).isDone()){
-//                DoneWorkList.add(worksRepository.getmWorksList().get(i));
-//            }
-//        }
-//        return DoneWorkList;
-//    }
-
-//    public List<WorksModel> getUndoneWork(){
-//        WorksRepository worksRepository = WorksRepository.getInstanceUndone();
-//        List<WorksModel> UndoneWorkList = new ArrayList<>();
-//        for (int i = 0; i < worksRepository.getmWorksList().size(); i++){
-//            if (!worksRepository.getmWorksList().get(i).isDone()){
-//                UndoneWorkList.add(worksRepository.getmWorksList().get(i));
-//            }
-//        }
-//        return UndoneWorkList;
-//    }
-
     public static WorksRepository getInstance(Context context) {
         if (instance == null){ // baraye ine ke faqat 1 bar new she
             instance = new WorksRepository(context);
@@ -62,39 +41,46 @@ public class WorksRepository {
         return instance;
     }
 
-    public static WorksRepository getInstanceUndone(Context context) {
-        if (instanceUndone == null){ // baraye ine ke faqat 1 bar new she
-            instanceUndone = new WorksRepository(context);
-        }
-        return instanceUndone;
-    }
-
-    // method e "query" select mizane...
-    // select operation with query syntax
     public List<WorksModel> getmWorksList() {
 
         List<WorksModel> mWorksList = new ArrayList<>();
-        TaskCursorWrapper taskCursorWrapper = queryTask(null, null);
+//        TaskCursorWrapper taskCursorWrapper = queryTask(null, null);
 
-//        // in khat Title va Id hameye crime ha ra barmigardune
-//        mDataBase.query(CrimeDbSchema.CrimeTable.NAME, new String[]{CrimeDbSchema.CrimeTable.Cols.TITLE, CrimeDbSchema.CrimeTable.Cols.DATE}, null, null, null, null, null);
-
+        String query = "select * from " + TaskDbSchema.ContactsTable.NAME + " inner join " + TaskDbSchema.TaskTable.NAME + " on " +
+                TaskDbSchema.ContactsTable.NAME + "." + TaskDbSchema.ContactsTable.Cols.CONTACT_ID + " = " +
+                TaskDbSchema.TaskTable.NAME + "." + TaskDbSchema.TaskTable.Cols.CONTACT_ID + " where " +
+                TaskDbSchema.ContactsTable.NAME + "." + TaskDbSchema.ContactsTable.Cols.CONTACT_ID + " = " + getContactId();
+        Cursor cursor = mDataBase.rawQuery(query, null);
         try {
-            if (taskCursorWrapper.getCount() == 0){
+            if (cursor.getCount() == 0){
                 return mWorksList;
             }
-            // cursor ruye db peymayesh mikone
-            taskCursorWrapper.moveToFirst();
-            while (!taskCursorWrapper.isAfterLast()){ // age isLast bezarim akhario dar nazar nemigire
-                mWorksList.add(taskCursorWrapper.getTask());
-                taskCursorWrapper.moveToNext();
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){ // age isLast bezarim akhario dar nazar nemigire
+                UUID uuid = UUID.fromString(cursor.getString(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.UUID)));
+                String title = cursor.getString(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.TITLE));
+                String detail = cursor.getString(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.DETAIL));
+//                Date date = new Date(cursor.getLong(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.DATE)));
+//                Date hour = new Date(cursor.getLong(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.HOUR)));
+                boolean isDone = cursor.getInt(cursor.getColumnIndex(TaskDbSchema.TaskTable.Cols.DONE)) != 0;
+                WorksModel worksModel = new WorksModel(uuid);
+                worksModel.setContactId(getContactId());
+                worksModel.setTitle(title);
+                worksModel.setDetail(detail);
+//                worksModel.setDate(date);
+//                worksModel.setHour(hour);
+                worksModel.setDone(isDone);
+                mWorksList.add(worksModel);
+                cursor.moveToNext();
             }//while
         }// try
         finally {
-            taskCursorWrapper.close();
+            cursor.close();
         }
         return mWorksList;
+
     }//getmWorksList
+
 
     public List<WorksModel> getmWorkListDone(){
 //        List<WorksModel> mWorksListDone = new ArrayList<>();
@@ -141,11 +127,35 @@ public class WorksRepository {
             finally {
                 taskCursorWrapper.close();
             }
-        }//getCrime
+        }//getWork
+
+    public Contact getContact(int id){
+//        for (WorksModel worksModel: mWorksList){
+//            if (worksModel.getId().equals(id))
+//                return worksModel;
+//        }
+//        return null;
+        String whereClause = TaskDbSchema.ContactsTable.Cols.CONTACT_ID + " = ? ";
+        String[] whereArgs = new String[]{String.valueOf(id)};
+        ContactCursorWrapper contactCursorWrapper = queryContact(whereClause, whereArgs);
+
+        try {
+            if (contactCursorWrapper.getCount() == 0) {
+                return null;
+            }
+            // cursor ruye db peymayesh mikone
+            contactCursorWrapper.moveToFirst();
+            return contactCursorWrapper.getContact();
+        }// try
+        finally {
+            contactCursorWrapper.close();
+        }
+    }//getContact
 
     // raw haye DB
     public ContentValues getContentValues(WorksModel worksModel){
         ContentValues contentValues = new ContentValues();
+        contentValues.put(TaskDbSchema.TaskTable.Cols.CONTACT_ID, worksModel.getContactId());
         contentValues.put(TaskDbSchema.TaskTable.Cols.UUID, worksModel.getId().toString());
         contentValues.put(TaskDbSchema.TaskTable.Cols.TITLE, worksModel.getTitle());
         contentValues.put(TaskDbSchema.TaskTable.Cols.DETAIL, worksModel.getDetail());
@@ -188,6 +198,18 @@ public class WorksRepository {
     }
 
 
+    private ContactCursorWrapper queryContact(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDataBase.query(
+                TaskDbSchema.ContactsTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null);
+        return new ContactCursorWrapper(cursor);
+    }
+
 //    public WorksModel getWorkDone(UUID id){
 //        for(int i=0;i<WorksRepository.getInstance().getmWorkListDone().size();i++) {
 //            if(WorksRepository.getInstance().getmWorkListDone().get(i).getId().equals(id)) {
@@ -203,8 +225,18 @@ public class WorksRepository {
     }
 
     public void addWorkDone(WorksModel worksModel){
-        WorksRepository.getInstance(mContext).getmWorkListDone().add(worksModel);
-//        mDataBase.insert(TaskDbSchema.TaskTable.NAME, null, getContentValuesDone(worksModel));
+//        WorksRepository.getInstance(mContext).getmWorkListDone().add(worksModel);
+//        worksModel.setDone(true);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TaskDbSchema.TaskTable.Cols.DONE, true); //if ebarat 1, true ---- else false
+
+        String whereClause = TaskDbSchema.TaskTable.Cols.UUID + " = ? ";
+        mDataBase.update(TaskDbSchema.TaskTable.NAME, contentValues, whereClause, new String[] {worksModel.getId().toString()});
+
+//        WorksRepository.getInstance(mContext).update(worksModel);
+
+ //        mDataBase.insert(TaskDbSchema.TaskTable.NAME, null, getContentValuesDone(worksModel));
     }
 
     public void deleteWork(UUID id){
@@ -277,8 +309,8 @@ public class WorksRepository {
 //        Cursor cursor = mDataBase.rawQuery(query, null);
 //        int numOfContacts = cursor.getCount();
         mDataBase = new TaskBaseHelper(mContext).getWritableDatabase();
-        mDataBase.insert(TaskDbSchema.ContactsTable.NAME, null, getContentValuesContacts(contact));
-    }
+        contactRowInserted = mDataBase.insert(TaskDbSchema.ContactsTable.NAME, null, getContentValuesContacts(contact));
+    }//insertContact
 
     public String searchContactPassword(String username){
 //        mDataBase = new TaskBaseHelper(mContext).getReadableDatabase();
@@ -306,4 +338,14 @@ public class WorksRepository {
         }
         return pass;
     }//searchContactPassword
+
+    public void setContactID(int conID){
+        contactID = conID;
+    }
+
+    public int getContactId(){
+//        return contactRowInserted;
+        Toast.makeText(mContext, "WorkRepository Welcome User: " + contactID, Toast.LENGTH_SHORT).show();
+        return contactID;
+    }//getContactId
 }
