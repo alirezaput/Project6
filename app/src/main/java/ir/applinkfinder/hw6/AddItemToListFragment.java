@@ -31,6 +31,7 @@ import ir.applinkfinder.hw6.model.WorksRepository;
  */
 public class AddItemToListFragment extends Fragment {
 
+    private static final String BUNDLE_CONTACT_ID = "bundle_contact_id";
     private ArrayList<WorksModel> mWorksList;
     ListFragment mListFragment;
     private RecyclerView.Adapter mAdapter;
@@ -40,6 +41,7 @@ public class AddItemToListFragment extends Fragment {
     private EditText mEditTextAddDate;
     private EditText mEditTextAddHour;
     private ImageButton mImageButtonAdd;
+    private int contactId;
 
     public AddItemToListFragment() {
         // Required empty public constructor
@@ -48,6 +50,8 @@ public class AddItemToListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        contactId = ((MainActivity) getActivity()).getContactIDinMainActivity();
 
         // ------------- Toolbar -----------
         ActionBar myActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -104,11 +108,20 @@ public class AddItemToListFragment extends Fragment {
         mAdapter = mListFragment.new MyAdapter(list);
 
         WorksModel worksModel = new WorksModel();
+        Toast.makeText(getActivity(), "**" + String.valueOf(WorksRepository.getInstance(getActivity()).getContactId()), Toast.LENGTH_SHORT).show();
+
+        // ***************************
+//        worksModel.setContactId((int) WorksRepository.getInstance(getActivity()).getContactId()); // ID ye contact ra barmigardune!
+////worksModel.setContactId(contactId);
+
+        int contactId = ((AddItemToListActivity) getActivity()).getContactIdInAddItem();
+        Toast.makeText(getActivity(), "AddItemToListFragment Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
+        worksModel.setContactId(contactId);
+
         worksModel.setTitle(mEditTextAddTitle.getText().toString());
         worksModel.setDetail(mEditTextAddDetail.getText().toString());
 //        worksModel.setDate(new Date());
 //        worksModel.setHour(mEditTextAddHour.getText().toString());
-
         mWorksRepository.addWork(worksModel);
 
         mAdapter.notifyItemInserted(0);
