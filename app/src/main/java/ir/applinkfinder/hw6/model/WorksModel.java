@@ -11,6 +11,15 @@ public class WorksModel {
     private Date mDate;
     private Date mHour;
     private boolean mDone;
+    private int mContactId;
+
+    public int getContactId() {
+        return mContactId;
+    }
+
+    public void setContactId(int contactId) {
+        mContactId = contactId;
+    }
 
     public WorksModel() {
         this(UUID.randomUUID());
