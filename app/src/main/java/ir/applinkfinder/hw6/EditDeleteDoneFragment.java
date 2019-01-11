@@ -1,6 +1,5 @@
 package ir.applinkfinder.hw6;
 
-
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -26,10 +25,6 @@ import java.util.UUID;
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class EditDeleteDoneFragment extends Fragment {
 
     private static final String ARG_TITLE = "arg_title";
@@ -58,34 +53,6 @@ public class EditDeleteDoneFragment extends Fragment {
     public EditDeleteDoneFragment() {
         // Required empty public constructor
     }
-
-//    @NonNull
-//    @Override
-//    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-//
-//        String title = getArguments().getString("title");
-//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-//        alertDialogBuilder.setTitle(title);
-//        alertDialogBuilder.setMessage("Are you sure?");
-//
-//        alertDialogBuilder.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                // on success
-//            }
-//        });
-//
-//        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (dialog != null) {
-//                    dialog.dismiss();
-//                }
-//            }
-//        });
-//
-//        return alertDialogBuilder.create();
-//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,9 +99,6 @@ public class EditDeleteDoneFragment extends Fragment {
 //        mEditTextTitle.setText(title);
 //        mEditTextDetail.setText(detail);
 
-        WorksModel wm = WorksRepository.getInstance(getActivity()).getWork(work_id);
-        String s = wm.getTitle();
-        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
         mTextViewTitle.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getTitle());
         mTextViewDetail.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getDetail());
 //        mEditTextTitle.setText(mWorksModel.getTitle());
@@ -175,76 +139,6 @@ public class EditDeleteDoneFragment extends Fragment {
         return view;
     }//onCreateView
 
-
-    //    // ----------------------------- deleteItem Method: ----------------------------
-//    public void deleteItem(String title, String detail){
-//        mListFragment = new ListFragment();
-//
-//        WorksRepository mWorksRepository = WorksRepository.getInstance();
-//        WorksRepository mWorksRepositoryDone = WorksRepository.getInstanceDone();
-//
-//        List<WorksModel> list = mWorksRepository.getmWorksList();
-//        List<WorksModel> listDone = mWorksRepositoryDone.getmWorkListDone();
-//
-//        mAdapter = mListFragment.new MyAdapter(list);
-//        mAdapterDone = mListFragment.new MyAdapter(listDone);
-//
-//
-//        mWorksRepository.deleteWork(title, detail);
-//        mWorksRepositoryDone.deleteWorkDone(title, detail);
-////        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(getActivity(), R.string.toast_delete_task, Toast.LENGTH_SHORT).show();
-//
-//        mAdapter.notifyItemRemoved(0);
-//        if (mAdapter == null) {
-//            mListFragment.mRecyclerView.setAdapter(mAdapter);
-//            mListFragment.mRecyclerView.setAdapter(mAdapterDone);
-//        }
-//        else{
-//            mAdapter.notifyDataSetChanged();
-//            mAdapterDone.notifyDataSetChanged();
-//        }
-//
-////        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
-//
-//    }//deleteItem
-//    // --------------------------------------------------------------------------------------
-
-//    // --------------------------- editItem
-//    public void editItem(){
-//        mListFragment = new ListFragment();
-//
-//        WorksRepository mWorksRepository = WorksRepository.getInstance();
-//        List<WorksModel> list = mWorksRepository.getmWorksList();
-//        List<WorksModel> listDone = mWorksRepository.getmWorkListDone();
-//
-//        mAdapter = mListFragment.new MyAdapter(list);
-//        mAdapterDone = mListFragment.new MyAdapter(listDone);
-//
-//        String newTitle  = mTextViewTitle.getText().toString();
-//        String newDetail = mEditTextDetail.getText().toString();
-////        Date newDate = mEditTextDate
-//
-//        mWorksRepository.editWork(work_id, newTitle, newDetail);
-//        mWorksRepository.editWorkDone(work_id, newTitle, newDetail);
-//
-////        mAdapter.notifyItemRemoved(0);
-//        if (mAdapter == null) {
-//            mListFragment.mRecyclerView.setAdapter(mAdapter);
-//        }
-//        else{
-//            mAdapter.notifyDataSetChanged();
-//        }
-//
-//        if (mAdapterDone == null) {
-//            mListFragment.mRecyclerView.setAdapter(mAdapterDone);
-//        }
-//        else{
-//            mAdapterDone.notifyDataSetChanged();
-//        }
-//    }
-    // ------------------------------------------------------------
-
     public void changeToDone(){
 
         mListFragment = new ListFragment();
@@ -260,10 +154,7 @@ public class EditDeleteDoneFragment extends Fragment {
 
         WorksModel currentWorksModel = WorksRepository.getInstance(getActivity()).getWork(work_id);
 
-currentWorksModel.setTitle(mTextViewTitle.getText().toString());
-currentWorksModel.setDetail(mTextViewDetail.getText().toString());
-currentWorksModel.setDone(true);
-
+        currentWorksModel.setDone(true);
 
         WorksRepository.getInstance(getActivity()).addWorkDone(currentWorksModel);
         Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
@@ -293,9 +184,6 @@ currentWorksModel.setDone(true);
         EditDeleteDoneFragment fragment = new EditDeleteDoneFragment();
 
         Bundle args = new Bundle();
-//        args.putString(ARG_TITLE, title);
-//        args.putString(ARG_DETAIL, detail);
-//        args.putSerializable(ARG_WORKMODEL, worksModel);
         args.putSerializable(ARG_WORK_ID, id);
         fragment.setArguments(args);
         return fragment;
