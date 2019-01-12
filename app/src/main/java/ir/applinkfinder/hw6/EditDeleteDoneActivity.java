@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 
 import java.util.UUID;
 
@@ -23,24 +24,27 @@ public class EditDeleteDoneActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_delete_done);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         title  = getIntent().getStringExtra(EXTRA_TITLE);
         detail = getIntent().getStringExtra(EXTRA_DETAIL);
         work_id = (UUID) getIntent().getSerializableExtra(EXTRA_WORK_ID);
 
+        // Fragment:
         // Begin the transaction
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+////        EditDeleteDoneFragment fragment = EditDeleteDoneFragment.newInstance(title, detail);
+//        EditDeleteDoneFragment fragment = EditDeleteDoneFragment.newInstance(work_id);
+//
+//        if (fragmentManager.findFragmentById(R.id.container_edit_delete_done) == null) {
+//            fragmentManager.beginTransaction()
+//                    .add(R.id.container_edit_delete_done, fragment)
+//                    .commit();
+//        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-//        EditDeleteDoneFragment fragment = EditDeleteDoneFragment.newInstance(title, detail);
-        EditDeleteDoneFragment fragment = EditDeleteDoneFragment.newInstance(work_id);
-
-        if (fragmentManager.findFragmentById(R.id.container_edit_delete_done) == null) {
-            fragmentManager.beginTransaction()
-                    .add(R.id.container_edit_delete_done, fragment)
-                    .commit();
-        }
-
-//        EditDeleteDoneFragment alertDialog = EditDeleteDoneFragment.newInstance("Title of Dialog");
-//        alertDialog.show(fragmentManager, "fragment_alert");
+        EditDeleteDoneFragment editDeleteDoneFragment = EditDeleteDoneFragment.newInstance(work_id);
+        editDeleteDoneFragment.show(fragmentManager, "Custom Dialog Fragment");
 
     }//onCreate
 
