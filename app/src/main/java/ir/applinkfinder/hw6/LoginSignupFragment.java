@@ -25,6 +25,7 @@ public class LoginSignupFragment extends Fragment {
 
     private Button mButtonLogin;
     private Button mButtonSignupHere;
+    private Button mButtonGuestLogin;
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
 
