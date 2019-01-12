@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,7 @@ import ir.applinkfinder.hw6.model.WorksRepository;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddItemToListFragment extends Fragment {
+public class AddItemToListFragment extends DialogFragment {
 
     private static final String BUNDLE_CONTACT_ID = "bundle_contact_id";
     private ArrayList<WorksModel> mWorksList;
@@ -45,6 +46,15 @@ public class AddItemToListFragment extends Fragment {
 
     public AddItemToListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // set Dialog Fragment Size and Title
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        getDialog().setTitle("اضافه کردن برنامه جدید");
+
     }
 
     @Override
@@ -88,6 +98,7 @@ public class AddItemToListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 insertItem();
+                dismiss();
             }
         });
 
@@ -107,15 +118,8 @@ public class AddItemToListFragment extends Fragment {
         List<WorksModel> list = mWorksRepository.getmWorksList();
         mAdapter = mListFragment.new MyAdapter(list);
 
-        WorksModel worksModel = new WorksModel();
-        Toast.makeText(getActivity(), "**" + String.valueOf(WorksRepository.getInstance(getActivity()).getContactId()), Toast.LENGTH_SHORT).show();
-
-        // ***************************
-//        worksModel.setContactId((int) WorksRepository.getInstance(getActivity()).getContactId()); // ID ye contact ra barmigardune!
-////worksModel.setContactId(contactId);
-
         int contactId = ((AddItemToListActivity) getActivity()).getContactIdInAddItem();
-        Toast.makeText(getActivity(), "AddItemToListFragment Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
+        WorksModel worksModel = new WorksModel();
         worksModel.setContactId(contactId);
         worksModel.setTitle(mEditTextAddTitle.getText().toString());
         worksModel.setDetail(mEditTextAddDetail.getText().toString());
@@ -132,7 +136,6 @@ public class AddItemToListFragment extends Fragment {
 //            mAdapter.notifyItemInserted(0);
             mAdapter.notifyDataSetChanged();
         }
-//        Toast.makeText(getActivity(), String.valueOf(mWorksRepository.getmWorksList().size()), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), R.string.toast_insert_item, Toast.LENGTH_SHORT).show();
 
     }//insertItem
