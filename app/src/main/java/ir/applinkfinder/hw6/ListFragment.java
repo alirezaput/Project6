@@ -1,6 +1,7 @@
 package ir.applinkfinder.hw6;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -14,18 +15,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.List;
 
+import ir.applinkfinder.hw6.database.TaskBaseHelper;
+import ir.applinkfinder.hw6.database.TaskDbSchema;
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
 
@@ -42,6 +47,8 @@ public class ListFragment extends Fragment {
     private ImageView mImageViewEmptyList;
     private String firstLetter;
     private int contactId;
+    private SQLiteDatabase mDataBase;
+
 
     private int tabNum = 0;
     public ListFragment() {
@@ -51,6 +58,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         // ------------- Toolbar -----------
         ActionBar myActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -72,6 +80,30 @@ public class ListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.new_task:
+                Intent intent = AddItemToListActivity.newIntent(getActivity(), contactId);
+                startActivity(intent);
+                return true;
+
+            case R.id.delete_all_tasks: // ezafe kardan e subtitle be menu
+                mDataBase = new TaskBaseHelper(getActivity()).getWritableDatabase(); // qabl az getWritableDatabase, onCreate e CrimeBaseHelper ejra mishe
+                mDataBase.delete(TaskDbSchema.TaskTable.NAME, null, null);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
@@ -85,7 +117,6 @@ public class ListFragment extends Fragment {
         mFloatingActionButtonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getActivity(), "AAA", Toast.LENGTH_SHORT).show();
                 Intent intent = AddItemToListActivity.newIntent(getActivity(), contactId);
                 startActivity(intent);
             }
@@ -103,7 +134,6 @@ public class ListFragment extends Fragment {
         updateUI();
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
         contactId = getArguments().getInt(ARG_CONTACT_ID);
-        Toast.makeText(getActivity(), "ListFragment Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
 
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         if (tabNum == 0){
@@ -175,8 +205,6 @@ public class ListFragment extends Fragment {
             mDateTextView       = itemView.findViewById(R.id.list_item_crime_date);
             mDetailTextView     = itemView.findViewById(R.id.list_item_crimed_detail);
             mImageViewGmailIcon = itemView.findViewById(R.id.gmailitem_letter);
-
-//            Toast.makeText(getActivity(), String.valueOf(mCrimesss.getId()), Toast.LENGTH_SHORT).show();
 
 //            mCrimeAdapter.notifyDataSetChanged();
 //             Edit - Delete - Done
