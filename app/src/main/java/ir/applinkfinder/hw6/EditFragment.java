@@ -3,13 +3,14 @@ package ir.applinkfinder.hw6;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.List;
@@ -22,12 +23,12 @@ import ir.applinkfinder.hw6.model.WorksRepository;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditFragment extends Fragment {
+public class EditFragment extends DialogFragment {
 
     private static final String ARG_WORK_ID_EDIT_FRAG = "arg_work_id_edit_frag";
     private EditText mEditTextTitle;
     private EditText mEditTextDetail;
-    private ImageButton mButtonEditDone;
+    private Button mButtonEditDone;
 
     ListFragment mListFragment;
     private RecyclerView.Adapter mAdapter;
@@ -37,6 +38,14 @@ public class EditFragment extends Fragment {
 
     public EditFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // set Dialog Fragment Size
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        getDialog().setTitle("ویرایش برنامه");
     }
 
     @Override
@@ -55,7 +64,7 @@ public class EditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit, container, false);
         mEditTextTitle = view.findViewById(R.id.edittext_edit_title);
         mEditTextDetail = view.findViewById(R.id.edittext_edit_detail);
-        mButtonEditDone = view.findViewById(R.id.imagebutton_edit_done);
+        mButtonEditDone = view.findViewById(R.id.button_edit_done);
 
         mEditTextTitle.setText(WorksRepository.getInstance(getActivity()).getWork(work_ID).getTitle());
         mEditTextDetail.setText(WorksRepository.getInstance(getActivity()).getWork(work_ID).getDetail());
@@ -68,6 +77,7 @@ public class EditFragment extends Fragment {
                 worksModel.setDetail(mEditTextDetail.getText().toString());
                 editItem(worksModel);
                 Toast.makeText(getActivity(), "Task Edited", Toast.LENGTH_SHORT).show();
+                dismiss();
             }
         });
 
