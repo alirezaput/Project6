@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import ir.applinkfinder.hw6.model.WorksRepository;
 
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         contactId = getIntent().getIntExtra(EXTRA_CONTACT_ID, -1);
-        Toast.makeText(this, "mainActivity Welcome User: " + contactId, Toast.LENGTH_SHORT).show();
 
         WorksRepository.getInstance(this).setContactID(contactId);
 
