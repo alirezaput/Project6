@@ -3,10 +3,8 @@ package ir.applinkfinder.hw6;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 public class AddItemToListActivity extends AppCompatActivity {
 
@@ -22,19 +20,24 @@ public class AddItemToListActivity extends AppCompatActivity {
 
         getContactIdInAddItem();
 
+        // Fragment:
         // Begin the transaction
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        Fragment fragment = new AddItemToListFragment();
+//        if (fragmentManager.findFragmentById(R.id.container_add_item_to_list) == null) {
+//            fragmentManager.beginTransaction()
+//                    .add(R.id.container_add_item_to_list, fragment)
+//                    .commit();
+//        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = new AddItemToListFragment();
-        if (fragmentManager.findFragmentById(R.id.container_add_item_to_list) == null) {
-            fragmentManager.beginTransaction()
-                    .add(R.id.container_add_item_to_list, fragment)
-                    .commit();
-        }
+        AddItemToListFragment addItemToListFragment = new AddItemToListFragment();
+        addItemToListFragment.show(fragmentManager, "Custom Dialog Fragment");
+
     }//onCreate
 
     public int getContactIdInAddItem(){
         contact_Id = getIntent().getIntExtra(EXTRA_CONTACT_ID, -2);
-        Toast.makeText(this, "AddItemToListActivity Welcome User: " + contact_Id, Toast.LENGTH_SHORT).show();
         return contact_Id;
     }
 
