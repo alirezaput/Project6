@@ -37,6 +37,14 @@ public class MyDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // set Dialog Fragment Size
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        getDialog().setTitle("حذف برنامه");
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -86,9 +94,6 @@ public class MyDialogFragment extends DialogFragment {
 
 //        WorksRepository.getInstance(getActivity()).deleteWorkDone(id);
         WorksRepository.getInstance(getActivity()).deleteWork(id);
-
-        Toast.makeText(getActivity(), "Done Number: " + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorkListDone().size()), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), "All Works: "   + String.valueOf(WorksRepository.getInstance(getActivity()).getmWorksList().size()), Toast.LENGTH_SHORT).show();
 
         Toast.makeText(getActivity(), R.string.toast_delete_task, Toast.LENGTH_SHORT).show();
 
