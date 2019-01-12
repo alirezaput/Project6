@@ -13,6 +13,7 @@
 
     <string name="login">Login</string>
     <string name="login_signuphere">SignUp Here</string>
+    <string name="login_guest">Guest Login</string>
 
     <string name="signup_name">نام</string>
     <string name="signup_email">آدرس ایمیل</string>
@@ -22,7 +23,13 @@
     <string name="toast_passwords_mismatch">Passwords Do Not Match!</string>
     <string name="toast_username_passwords_mismatch">Username and Password Do Not Match!</string>
 
+    <string name="menu_add_task">اضافه کردن برنامه</string>
+    <string name="menu_delete_all_task">حذف همه برنامه ها</string>
 
 
+    <string name="button_edit_task">ویرایش</string>
+    <string name="button_delete_task">حذف</string>
+    <string name="button_done_task">انجام شد.</string>
+    <string name="button_edit_done">اعمال تغییرات</string>
 
 </resources>
