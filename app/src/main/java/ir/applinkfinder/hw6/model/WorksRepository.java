@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -337,7 +336,38 @@ public class WorksRepository {
 
     public int getContactId(){
 //        return contactRowInserted;
-        Toast.makeText(mContext, "WorkRepository Welcome User: " + contactID, Toast.LENGTH_SHORT).show();
         return contactID;
     }//getContactId
+
+    public boolean isUsernameExist(String username){
+
+        String UsernameInDB = null;
+        String whereClause = TaskDbSchema.ContactsTable.Cols.USERNAME + " = ?";
+        String[] whereArgs = new String[]{username};
+        ContactCursorWrapper contactCursorWrapper = queryContact(whereClause, whereArgs);
+
+//        try {
+//            if (contactCursorWrapper.getCount() == 0){
+//                return UsernameInDB;
+//            }
+            if (contactCursorWrapper.getCount()<=0){
+                contactCursorWrapper.close();
+                return false;
+            }
+            contactCursorWrapper.close();
+            return true;
+
+//            // cursor ruye db peymayesh mikone
+//            contactCursorWrapper.moveToFirst();
+//            while (!contactCursorWrapper.isAfterLast()){ // age isLast bezarim akhario dar nazar nemigire
+//                UsernameInDB = contactCursorWrapper.getString(contactCursorWrapper.getColumnIndex(TaskDbSchema.ContactsTable.Cols.USERNAME));
+//                contactCursorWrapper.moveToNext();
+//            }//while
+//        }// try
+//        finally {
+//            contactCursorWrapper.close();
+//        }
+//        return UsernameInDB;
+
+    }//isUsernameExist
 }
