@@ -6,11 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,6 +32,8 @@ public class LoginSignupFragment extends Fragment {
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
 
+    private CheckBox mCheckBoxShowPassword;
+
     public LoginSignupFragment() {
         // Required empty public constructor
     }
@@ -39,8 +44,26 @@ public class LoginSignupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login_signup, container, false);
         mButtonLogin = view.findViewById(R.id.button_login);
         mButtonSignupHere = view.findViewById(R.id.button_signup);
+        mButtonGuestLogin = view.findViewById(R.id.button_guest);
+
         mEditTextPassword = view.findViewById(R.id.edittext_password);
         mEditTextUsername = view.findViewById(R.id.edittext_username);
+
+        mCheckBoxShowPassword = view.findViewById(R.id.checkbox_show_password_login);
+
+        // Show Password Checkbox:
+        mCheckBoxShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mCheckBoxShowPassword.isChecked()){
+                    mEditTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                else {
+                    mEditTextPassword.setInputType(129); // 129 : textPassword
+                }
+
+            }
+        });
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,19 +87,22 @@ public class LoginSignupFragment extends Fragment {
                     finally {
                         cursor.close();
                     }
-
-//                    ContactIdFinder contactIdFinder = new ContactIdFinder();
-//                    contactId = contactIdFinder.getContactId(mEditTextUsername.getText().toString());
-
                     Intent intent = MainActivity.newIntent(getActivity(), contactId);
-                    startActivity(intent);
-                }
+                    startActivity(intent);                }
                 else {
                     Toast.makeText(getActivity(), R.string.toast_username_passwords_mismatch, Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
+
+//        mButtonGuestLogin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int guestContactId = -2;
+//                Intent intent = MainActivity.newIntent(getActivity(), guestContactId);
+//                startActivity(intent);
+//            }
+//        });
 
         mButtonSignupHere.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,5 +124,5 @@ public class LoginSignupFragment extends Fragment {
         });
 
         return view;
-    }
+    }//onCreateView
 }
