@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import java.util.Date;
 import java.util.List;
 
 import ir.applinkfinder.hw6.database.TaskBaseHelper;
@@ -40,6 +41,7 @@ import ir.applinkfinder.hw6.model.WorksRepository;
 public class ListFragment extends Fragment {
     private static final String ARG_TAB_TYPE = "arg_tab_type";
     private static final String ARG_CONTACT_ID = "arg_contact_id";
+
     public RecyclerView mRecyclerView;
     private MyAdapter mCrimeAdapter;
     private List<WorksModel> mWorksList;
@@ -65,7 +67,7 @@ public class ListFragment extends Fragment {
 
         RelativeLayout myLayout = new RelativeLayout(getActivity());
         TextView textview = new TextView(getActivity());
-        textview.setText(R.string.actionbar_editdeletedone_title);
+        textview.setText(R.string.actionbar_listfragment_title);
         textview.setTextColor(Color.WHITE);
         RelativeLayout.LayoutParams textviewDetails =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -132,6 +134,7 @@ public class ListFragment extends Fragment {
         mRecyclerView.setVisibility(View.VISIBLE);
         mImageViewEmptyList.setVisibility(View.GONE);
         updateUI();
+
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
         contactId = getArguments().getInt(ARG_CONTACT_ID);
 
@@ -218,9 +221,12 @@ public class ListFragment extends Fragment {
         }
 
         public void bind(WorksModel worksModel) {
+            String date = new Date().toString();
+
             mWorkModel = worksModel;
             mTitleTextView.setText(worksModel.getTitle());
             mDetailTextView.setText(worksModel.getDetail());
+            mDateTextView.setText(date);
 
 //            mDateTextView.setText(worksModel.getDate().toString());
 //            mSolvedImageView.setVisibility(worksModel.isSolved() == true ? View.VISIBLE : View.GONE);
