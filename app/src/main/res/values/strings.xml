@@ -8,6 +8,13 @@
     <string name="toast_delete_task">برنامه مورد نظر شما با موفقیت حذف شد!</string>
     <string name="toast_insert_item">برنامه روزانه اضافه شد.</string>
     <string name="actionbar_editdeletedone_title">ویرایش برنامه هفتگی</string>
+    <string name="actionbar_listfragment_title">برنامه هفتگی</string>
+    <string name="actionbar_add_item_to_list_title">اضافه کردن برنامه جدید</string>
+
+
+
+    <string name="delete_task_dialog">برنامه حذف شود؟</string>
+
     <string name="login_username">نام کاربری</string>
     <string name="login_password">رمز عبور</string>
 
@@ -22,6 +29,10 @@
 
     <string name="toast_passwords_mismatch">Passwords Do Not Match!</string>
     <string name="toast_username_passwords_mismatch">Username and Password Do Not Match!</string>
+    <string name="toast_empty_username">Please Enter Username</string>
+    <string name="toast_username_exists">This Username is Already Defined in Database</string>
+
+
 
     <string name="menu_add_task">اضافه کردن برنامه</string>
     <string name="menu_delete_all_task">حذف همه برنامه ها</string>
@@ -31,5 +42,7 @@
     <string name="button_delete_task">حذف</string>
     <string name="button_done_task">انجام شد.</string>
     <string name="button_edit_done">اعمال تغییرات</string>
+
+    <string name="checkbox_show_password">نمایش رمز عبور</string>
 
 </resources>
