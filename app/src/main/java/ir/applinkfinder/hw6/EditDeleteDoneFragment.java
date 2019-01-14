@@ -119,6 +119,7 @@ public class EditDeleteDoneFragment extends DialogFragment {
             public void onClick(View v) {
 //                myDialogFragment.newInstance(title, detail).show(fragmentManager, "Custom Dialog Manager");
                 myDialogFragment.newInstance(work_id).show(fragmentManager, "Custom Dialog Manager");
+                dismiss();
             }
         });
 
@@ -139,7 +140,7 @@ public class EditDeleteDoneFragment extends DialogFragment {
                 FragmentManager fragmentManager = getFragmentManager();
                 EditFragment editFragment = EditFragment.newInstance(work_id);
                 editFragment.show(fragmentManager, "Custom Dialog Fragment");
-
+                dismiss();
             }
         });
 
