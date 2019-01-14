@@ -46,16 +46,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     public int getContactIDinMainActivity(){
         return contactId;
     }
 
+    // Member Registered Login
     public static Intent newIntent(Context context, int contactId){
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(EXTRA_CONTACT_ID, contactId);
+        return intent;
+    }//newIntent
+
+    // Guest Login
+    public static Intent newIntent(Context context ){
+        Intent intent = new Intent(context, MainActivity.class);
         return intent;
     }//newIntent
 }
