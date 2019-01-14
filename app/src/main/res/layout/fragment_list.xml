@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/image_to_do_list"
+        android:src="@drawable/image_empty_list"
         android:id="@+id/imageView_empty_list"/>
 
     <android.support.design.widget.FloatingActionButton
