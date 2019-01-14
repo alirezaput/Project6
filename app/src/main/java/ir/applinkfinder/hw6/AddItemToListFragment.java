@@ -1,12 +1,10 @@
 package ir.applinkfinder.hw6;
 
-
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -26,10 +24,6 @@ import java.util.List;
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AddItemToListFragment extends DialogFragment {
 
     private static final String BUNDLE_CONTACT_ID = "bundle_contact_id";
@@ -54,7 +48,6 @@ public class AddItemToListFragment extends DialogFragment {
         // set Dialog Fragment Size and Title
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         getDialog().setTitle("اضافه کردن برنامه جدید");
-
     }
 
     @Override
@@ -68,7 +61,7 @@ public class AddItemToListFragment extends DialogFragment {
 
         RelativeLayout myLayout = new RelativeLayout(getActivity());
         TextView textview = new TextView(getActivity());
-        textview.setText(R.string.actionbar_editdeletedone_title);
+        textview.setText(R.string.actionbar_add_item_to_list_title);
         textview.setTextColor(Color.WHITE);
         RelativeLayout.LayoutParams textviewDetails =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
