@@ -1,11 +1,18 @@
 package ir.applinkfinder.hw6;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,21 +21,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
 import ir.applinkfinder.hw6.model.WorksModel;
 import ir.applinkfinder.hw6.model.WorksRepository;
+import ir.applinkfinder.hw6.utils.PictureUtils;
 
 public class EditDeleteDoneFragment extends DialogFragment {
 
-    private static final String ARG_TITLE = "arg_title";
-    private static final String ARG_DETAIL = "arg_detail";
-//    private static final String ARG_WORKMODEL = "arg_workmodel";
     private static final String ARG_WORK_ID = "arg_work_id";
+    public static final int REQUEST_PHOTOS = 1;
 
     ListFragment mListFragment;
     private RecyclerView.Adapter mAdapter;
@@ -37,15 +46,16 @@ public class EditDeleteDoneFragment extends DialogFragment {
     private TextView mTextViewTitle;
     private TextView mTextViewDetail;
     private TextView mTextViewDate;
-    private TextView mTextHour;
+    private TextView mTextViewHour;
 
     private Button mButtonDone;
     private Button mButtonDelete;
     private Button mButtonEdit;
 
-//    private String title;
-//    private String detail;
-//    private WorksModel mWorksModel;
+    private ImageView mImageViewTaskPic;
+    private ImageButton mImageButtonAddTaskPic;
+    private File mPhotoFile;
+
     private UUID work_id;
 
     public EditDeleteDoneFragment() {
@@ -69,6 +79,7 @@ public class EditDeleteDoneFragment extends DialogFragment {
 //            detail = getArguments().getString(ARG_DETAIL);
 //            mWorksModel = (WorksModel) getArguments().getSerializable(ARG_WORKMODEL);
             work_id = (UUID) getArguments().getSerializable(ARG_WORK_ID);
+            mPhotoFile = WorksRepository.getInstance(getActivity()).getPhotoFile(WorksRepository.getInstance(getActivity()).getWork(work_id));
         }
 
         // ------------- Toolbar -----------
@@ -88,7 +99,6 @@ public class EditDeleteDoneFragment extends DialogFragment {
 
         myActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         myActionBar.setCustomView(textview);
-
     }
 
     @Override
@@ -96,23 +106,41 @@ public class EditDeleteDoneFragment extends DialogFragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_edit_delete_done, container, false);
-        mTextViewTitle     = view.findViewById(R.id.edittext_edit_done_remove_title);
-        mTextViewDetail    = view.findViewById(R.id.edittext_edit_done_remove_detail);
-        mButtonDone   = view.findViewById(R.id.button_done);
-        mButtonDelete = view.findViewById(R.id.button_delete);
-        mButtonEdit   = view.findViewById(R.id.button_edit);
+        mTextViewTitle  = view.findViewById(R.id.edittext_edit_done_remove_title);
+        mTextViewDetail = view.findViewById(R.id.edittext_edit_done_remove_detail);
+        mTextViewDate   = view.findViewById(R.id.edittext_edit_done_remove_date);
+        mTextViewHour   = view.findViewById(R.id.edittext_edit_done_remove_hour);
+        mButtonDone     = view.findViewById(R.id.button_done);
+        mButtonDelete   = view.findViewById(R.id.button_delete);
+        mButtonEdit     = view.findViewById(R.id.button_edit);
+        mImageButtonAddTaskPic = view.findViewById(R.id.imagebutton_pic_for_task);
+        mImageViewTaskPic = view.findViewById(R.id.imageview_pic_for_task);
 
-//        mEditTextTitle.setText(title);
-//        mEditTextDetail.setText(detail);
+        mImageButtonAddTaskPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Uri uri = getPhotoFileUri();
+                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                PackageManager packageManager = getActivity().getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                for (ResolveInfo activity : activities) {
+                    getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+                startActivityForResult(captureIntent, REQUEST_PHOTOS);
+            }
+        });
 
         mTextViewTitle.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getTitle());
         mTextViewDetail.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getDetail());
-//        mEditTextTitle.setText(mWorksModel.getTitle());
-//        mEditTextDetail.setText(mWorksModel.getDetail());
+//        mTextViewDate.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getDate().toString());
+//        mTextViewHour.setText(WorksRepository.getInstance(getActivity()).getWork(work_id).getHour().toString());
 
         final FragmentManager fragmentManager = getFragmentManager();
         final MyDialogFragment myDialogFragment = new MyDialogFragment();
-
 
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +150,6 @@ public class EditDeleteDoneFragment extends DialogFragment {
                 dismiss();
             }
         });
-
 
         mButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,8 +178,33 @@ public class EditDeleteDoneFragment extends DialogFragment {
                 dismiss();
             }
         });
+        updatePhotoView();
         return view;
     }//onCreateView
+
+    public void updatePhotoView(){
+        if (mPhotoFile == null || !mPhotoFile.exists()){
+            mImageViewTaskPic.setImageDrawable(null);
+        }
+        else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mImageViewTaskPic.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PHOTOS) {
+            Uri uri = getPhotoFileUri();
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
+        }
+    }
+
+    private Uri getPhotoFileUri() {
+        return FileProvider.getUriForFile(getActivity(),"ir.applinkfinder.hw6.fileprovider", mPhotoFile);
+    }
 
     public void changeToDone(){
 
