@@ -1,7 +1,6 @@
 package ir.applinkfinder.hw6;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,12 +29,12 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-import ir.applinkfinder.hw6.database.TaskBaseHelper;
-import ir.applinkfinder.hw6.database.TaskDbSchema;
+import ir.applinkfinder.hw6.model.DaoSession;
 import ir.applinkfinder.hw6.model.WorksModel;
+import ir.applinkfinder.hw6.model.WorksModelDao;
 import ir.applinkfinder.hw6.model.WorksRepository;
 
 /**
@@ -48,9 +50,11 @@ public class ListFragment extends Fragment {
     private FloatingActionButton mFloatingActionButtonAdd;
     private ImageView mImageViewEmptyList;
     private String firstLetter;
-    private int contactId;
-    private SQLiteDatabase mDataBase;
+    private long contactId;
+//    private SQLiteDatabase mDataBase;
+    private WorksModelDao worksModelDao;
 
+    private WorksModel mTask;
 
     private int tabNum = 0;
     public ListFragment() {
@@ -62,6 +66,9 @@ public class ListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        DaoSession daoSession = (App.getApp()).getDaoSession();
+        WorksModelDao worksModelDao = daoSession.getWorksModelDao();
+        mCrimeAdapter = new MyAdapter(worksModelDao.loadAll());
         // ------------- Toolbar -----------
         ActionBar myActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
@@ -96,9 +103,20 @@ public class ListFragment extends Fragment {
                 return true;
 
             case R.id.delete_all_tasks: // ezafe kardan e subtitle be menu
-                mDataBase = new TaskBaseHelper(getActivity()).getWritableDatabase(); // qabl az getWritableDatabase, onCreate e CrimeBaseHelper ejra mishe
-                mDataBase.delete(TaskDbSchema.TaskTable.NAME, null, null);
+                // ORM
+                DaoSession daoSession = (App.getApp()).getDaoSession();
+                WorksModelDao worksModelDao = daoSession.getWorksModelDao();
+                worksModelDao.deleteAll();
+
+                // SQLite
+//                mDataBase = new TaskBaseHelper(getActivity()).getWritableDatabase(); // qabl az getWritableDatabase, onCreate e CrimeBaseHelper ejra mishe
+//                mDataBase.delete(TaskDbSchema.TaskTable.NAME, null, null);
                 return true;
+
+            case R.id.log_off:
+//                Intent intent1 = MainActivity.newIntent(getActivity());
+//                startActivity(intent1);
+//                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -136,8 +154,8 @@ public class ListFragment extends Fragment {
         updateUI();
 
         tabNum = getArguments().getInt(ARG_TAB_TYPE);
-        contactId = getArguments().getInt(ARG_CONTACT_ID);
-
+        contactId = getArguments().getLong(ARG_CONTACT_ID);
+//        mTask = WorksRepository.getInstance(getActivity()).getWork(UUID?);
         WorksRepository worksRepository = WorksRepository.getInstance(getActivity());
         if (tabNum == 0){
 
@@ -198,6 +216,7 @@ public class ListFragment extends Fragment {
         private ImageView mSolvedImageView;
         private ImageView mImageViewGmailIcon;
 //        private ImageView letterImageView;
+        private Button mButtonShareTask;
 
         private WorksModel mWorkModel;
 
@@ -208,9 +227,12 @@ public class ListFragment extends Fragment {
             mDateTextView       = itemView.findViewById(R.id.list_item_crime_date);
             mDetailTextView     = itemView.findViewById(R.id.list_item_crimed_detail);
             mImageViewGmailIcon = itemView.findViewById(R.id.gmailitem_letter);
+            mButtonShareTask    = itemView.findViewById(R.id.button_share_task);
 
 //            mCrimeAdapter.notifyDataSetChanged();
 //             Edit - Delete - Done
+//            Log.i("UUID", String.valueOf(mWorkModel.getId())+"");
+
             itemView.setOnClickListener(new View.OnClickListener() { // har jaye view click kardim, listener kari anjam dahad
                 @Override
                 public void onClick(View v) {
@@ -218,18 +240,72 @@ public class ListFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+
+            mButtonShareTask.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    //                Intent reportIntent = new Intent();
+//                reportIntent.setAction(Intent.ACTION_SEND);
+
+//                Intent reportIntent = new Intent(Intent.ACTION_SEND);
+//                reportIntent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+//                reportIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject)); //subject mizare
+//                reportIntent.setType("text/plain");
+////                startActivity(reportIntent);
+//                startActivity(Intent.createChooser(reportIntent, getString(R.string.send_report))); // createChooser(intent, title)
+
+
+//                String title = "Example title";
+
+                    Intent shareIntent = ShareCompat.IntentBuilder.from(getActivity())
+                            .setChooserTitle(getString(R.string.task_share_title))
+                            .setType("text/plain")
+                        .setText(getTaskReport())
+                            .getIntent();
+                    if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null){
+                        startActivity(shareIntent);
+                    }
+                }
+            });
         }
 
+    private String getTaskReport(){
+        String report = null;
+        String dateString = new SimpleDateFormat("yyyy/MM/dd").format(mWorkModel.getDate());
+
+        String solvedString = null;
+
+        if (mWorkModel.getDone()){
+            solvedString = getString(R.string.task_report_done);
+        }
+        else{
+            solvedString = getString(R.string.task_report_undone);
+        }
+
+        String titleString = null;
+        if (mWorkModel.getTitle() == null) {
+            titleString = getString(R.string.crime_report_no_suspect);
+        }
+        else {
+            titleString = getString(R.string.crime_report_suspect, mWorkModel.getTitle());
+        }
+//        report = getString(R.string.task_report, mWorkModel.getTitle(), dateString, solvedString, suspectString);
+        report = getString(R.string.task_report, mWorkModel.getTitle(), mWorkModel.getDetail(), dateString, solvedString);
+        return report;
+    }//getTaskReport
+
+
         public void bind(WorksModel worksModel) {
-            String date = new Date().toString();
+//            String date = new Date().toString();
 
             mWorkModel = worksModel;
             mTitleTextView.setText(worksModel.getTitle());
             mDetailTextView.setText(worksModel.getDetail());
-            mDateTextView.setText(date);
-
-//            mDateTextView.setText(worksModel.getDate().toString());
-//            mSolvedImageView.setVisibility(worksModel.isSolved() == true ? View.VISIBLE : View.GONE);
+//            mDateTextView.setText(date);
+            mDateTextView.setText(worksModel.getDate().toString());
 
             if (worksModel.getTitle().matches("")) {
                 firstLetter = " ";
@@ -275,22 +351,24 @@ public class ListFragment extends Fragment {
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             WorksModel worksModel = mCrimes.get(position);
 //            holder.bind(worksModel);
+            Log.i("UUID", worksModel.getId()+"");
             ((CrimeHolder) holder).bind(worksModel);
         }
 
         @Override
         public int getItemCount() {
             return mCrimes.size();
+//            return (int) worksModelDao.count();
         }
     }
     //---------------------------------- Adapter ------------------------------------
 
-    public static ListFragment newInstance(int tabType, int contactId){ //@NonNull yani crimeId nemitune Null bashe
+    public static ListFragment newInstance(int tabType, long contactId){ //@NonNull yani crimeId nemitune Null bashe
         ListFragment fragment = new ListFragment();
 
         Bundle args = new Bundle();
         args.putInt(ARG_TAB_TYPE, tabType);
-        args.putInt(ARG_CONTACT_ID, contactId);
+        args.putLong(ARG_CONTACT_ID, contactId);
         fragment.setArguments(args);
         return fragment;
     }//newInstance
